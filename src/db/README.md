@@ -4,21 +4,21 @@
 
 ### Department
 
-| deptid | adminuser | adminpass | name    |
+| deptid | adminuser | adminpass |deptname |
 | :----- | :-------: | :-------: | ------: |
 | integer| varchar   | varchar   | varchar |
 
 ### Timetable
 
-| sectionid |  year  | semester | department | deptid |
+| sectionid | yearno | semester | department | deptid |
 | :-------- | :----: | :------: | :--------: | -----: |
 | varchar   | integer| integer  | varchar    | integer|
 
 ### Student
 
-|   usn   |  name  | emailid |  year  | semester | password |  deptid  | sectionid |
+|   usn   |  stname| emailid |  yearno| semester |studentpass|  deptid  | sectionid |
 | :------ | :----: | :-----: | :----: | :------: | :------: | :------: | --------: |
-| varchar | varchar| varchar | integer|  integer | varchar  |  integer |  varchar  |
+| varchar | varchar| varchar | integer|  integer | varchar   |  integer |  varchar  |
 
 ### Follows
 
@@ -34,7 +34,7 @@
 
 ### Teacher
 
-| teacherid |  name  | emailid | password |
+| teacherid |  tname  | emailid | pass |
 | :-------- | :----: | :-----: | -------: |
 |  varchar  | varchar| varchar | varchar  |
 
@@ -58,7 +58,7 @@
 
 ### Event
 
-| eventid | fromtime | totime |  date  |   url   | feedback | classid | sectionid |
+| eventid | fromtime | totime |ondate  |  link   | feedback | classid | sectionid |
 | :------ | :------: | :----: | :----: | :-----: | :------: | :-----: | --------: |
 | varchar |   time   |  time  |  date  | varchar | varchar  | varchar | varchar   |
 
