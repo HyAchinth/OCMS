@@ -10,7 +10,7 @@
 
 ### Timetable
 
-| sectionid | yearno | semester | department | deptid |
+| sectionid | yearno | semester | deptname | deptid |
 | :-------- | :----: | :------: | :--------: | -----: |
 | varchar   | integer| integer  | varchar    | integer|
 
@@ -67,3 +67,22 @@
 | teacherid | sectionid |
 | :-------- | --------: |
 |  varchar  |   varchar |
+
+/user
+/admin
+/class/1 or /class/2\
+
+apis:
+
+department
+    1) add dept -auth
+    2) login admin -auth
+    3) get admin
+    3) Add student #note: use bcrypt.js to encrypt default password
+    4) Add techer
+
+student
+    1) login - auth
+
+teacher
+    1)login - auth

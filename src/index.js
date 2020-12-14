@@ -4,6 +4,8 @@ const {mysql} = require("./db/mysql");
 
 const port = 3000;
 app.use(express.json());
+app.use("/student",require("./routes/student.js"));
+app.use("/auth",require("./routes/auth"));
 
 app.get('/:id',async (req, res) => {
     //res.send('Hello World!')
@@ -14,10 +16,18 @@ app.get('/:id',async (req, res) => {
     
 })
 
-app.post('/dept',async (req, res) => {
+
+
+app.post('/admin/timetable',async (req, res) => {
     const data = req.body
-    const [results,fields] = await mysql.query("INSERT INTO department (deptname,adminuser,adminpass) values (?)", [[data.deptname,data.adminuser,data.adminpass]])
-    res.json({"msg":"added"})
+    const [results,fields] = await mysql.query("INSERT INTO timetable (sectionid,yearno,semester,deptname,deptid) values (?)", [[data.sectionid,data.yearno,data.semester,data.department,data.deptid]])
+    res.json({"msg":"timetable added"})
+})
+
+app.post('/admin/student', async (req,res)=>{
+    const data = req.body
+    const [results,fields] =  await mysql.query("INSERT INTO student (usn,stname,emailid,yearno,semester,studentpass,deptid,sectionid) VALUES (?)", [[data.usn,data.stname,data.emailid,data.yearno,data.semester,data.studentpass,data.deptid,data.sectionid]])
+    res.json({"msg":"student added"})
 })
 
 app.listen(port, () => {
