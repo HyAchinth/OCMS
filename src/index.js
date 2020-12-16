@@ -4,7 +4,7 @@ const {mysql} = require("./db/mysql");
 
 const port = 3000;
 app.use(express.json());
-app.use("/student",require("./routes/student.js"));
+app.use("/student",require("./routes/student"));
 app.use("/auth",require("./routes/auth"));
 
 app.get('/:id',async (req, res) => {
@@ -24,11 +24,7 @@ app.post('/admin/timetable',async (req, res) => {
     res.json({"msg":"timetable added"})
 })
 
-app.post('/admin/student', async (req,res)=>{
-    const data = req.body
-    const [results,fields] =  await mysql.query("INSERT INTO student (usn,stname,emailid,yearno,semester,studentpass,deptid,sectionid) VALUES (?)", [[data.usn,data.stname,data.emailid,data.yearno,data.semester,data.studentpass,data.deptid,data.sectionid]])
-    res.json({"msg":"student added"})
-})
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)

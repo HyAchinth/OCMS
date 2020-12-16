@@ -5,6 +5,8 @@ const {mysql} = require("../db/mysql");
 const auth = require("../middleware/auth");
 const generateAuthToken = require("../token/generateAuthToken");
 
+//Crete new department/admin
+
 router.post('/department',async (req, res) => {
     try {
         const data = req.body
@@ -28,6 +30,7 @@ router.post('/department',async (req, res) => {
    
 })
 
+// Get admin details
 
 router.get("/department",auth,async (req,res)=>{
     try {
@@ -41,6 +44,10 @@ router.get("/department",auth,async (req,res)=>{
         console.log(error);
     }
 });
+
+/*
+Admin Login
+*/
 
 router.post("/admin/login",async (req,res)=>{
     try {
@@ -65,6 +72,49 @@ router.post("/admin/login",async (req,res)=>{
         console.log(error);
     }
 });
+
+//register student
+
+
+router.post("/admin/student",auth, async (req,res)=>{
+    try {
+        const data = req.body
+        const[results] = await mysql.query("SELECT usn AS usn FROM student WHERE usn = ?",[data.usn])
+        if(results.length!==0 && results[0].usn===data.usn){
+            return res.json({msg:"student already registered!"});
+        }
+        const salt = await bcrypt.genSalt(10);
+        data.studentpass = await bcrypt.hash(data.studentpass,salt);
+    const [results2] = await mysql.query("INSERT INTO student (usn,stname,emailid,yearno,semester,studentpass,deptid,sectionid) VALUES (?)", [[data.usn,data.stname,data.emailid,data.yearno,data.semester,data.studentpass,data.deptid,data.sectionid]])
+    
+    res.json({"msg":"student added"})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);           
+    }
+   
+})
+
+//register teacher
+
+router.post("/admin/teacher",auth, async (req,res)=>{
+    try {
+        const data = req.body
+        const[results] = await mysql.query("SELECT teacherid AS teacherid FROM teacher WHERE teacherid = ?",[data.teacherid])
+        if(results.length!==0 && results[0].teacherid===data.teacherid){
+            return res.json({msg:"teacher already registered!"});
+        }
+        const salt = await bcrypt.genSalt(10);
+        data.studentpass = await bcrypt.hash(data.studentpass,salt);
+    const [results2] = await mysql.query("INSERT INTO teacher (teacherid,tname,emailid,pass) VALUES (?)", [[data.teacherid,data.tname,data.emailid,data.pass]])
+    
+    res.json({"msg":"teacher added"})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);           
+    }
+   
+})
 
 
 module.exports = router;
