@@ -45,6 +45,7 @@ CREATE TABLE teacher(
 );
 
 
+
 CREATE TABLE facultyof(
     teacherid VARCHAR(255),
     deptid INT,

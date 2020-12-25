@@ -95,6 +95,22 @@ router.post("/admin/student",auth, async (req,res)=>{
    
 })
 
+//update student
+
+router.put("/admin/student",auth, async (req,res)=>{
+    try {
+        const data = req.body
+        
+        const [results2] = await mysql.query("UPDATE student SET usn = (?),stname = (?),emailid = (?),yearno = (?),semester = (?),studentpass = (?),deptid = (?),sectionid=(?) WHERE usn = (?)", [data.usn,data.stname,data.emailid,data.yearno,data.semester,data.studentpass,data.deptid,data.sectionid,data.usn])
+    
+    res.json({"msg":"student updated"})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);           
+    }
+   
+})
+
 //register teacher
 
 router.post("/admin/teacher",auth, async (req,res)=>{
@@ -105,7 +121,7 @@ router.post("/admin/teacher",auth, async (req,res)=>{
             return res.json({msg:"teacher already registered!"});
         }
         const salt = await bcrypt.genSalt(10);
-        data.studentpass = await bcrypt.hash(data.studentpass,salt);
+        data.pass = await bcrypt.hash(data.pass,salt);
     const [results2] = await mysql.query("INSERT INTO teacher (teacherid,tname,emailid,pass) VALUES (?)", [[data.teacherid,data.tname,data.emailid,data.pass]])
     
     res.json({"msg":"teacher added"})
@@ -115,6 +131,50 @@ router.post("/admin/teacher",auth, async (req,res)=>{
     }
    
 })
+
+//update teacher
+
+router.put("/admin/teacher",auth, async (req,res)=>{
+    try {
+        const data = req.body
+        
+        const [results2] = await mysql.query("UPDATE teacher SET teacherid = (?),tname = (?),emailid = (?),pass = (?) WHERE  teacherid = (?)", [data.teacherid,data.tname,data.emailid,data.pass,data.teacherid])
+    
+    res.json({"msg":"teacher updated"})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);           
+    }
+   
+})
+
+//add timetable
+
+router.post('/admin/timetable',auth,async (req, res) => {
+    const data = req.body
+    const [results,fields] = await mysql.query("INSERT INTO timetable (sectionid,yearno,semester,deptname,deptid) values (?)", [[data.sectionid,data.yearno,data.semester,data.department,data.deptid]])
+    res.json({"msg":"timetable added"})
+})
+
+
+//edit timetable
+
+router.put("/admin/timetable",auth, async (req,res)=>{
+    try {
+        const data = req.body
+        
+        const [results2] = await mysql.query("UPDATE timetable SET sectionid = (?),yearno = (?), semester = (?),deptname = (?),deptid = (?) where sectionid=(?)", [data.sectionid,data.yearno,data.semester,data.department,data.deptid,data.sectionid])
+    
+    res.json({"msg":"timetable updated"})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);           
+    }
+   
+})
+
+
+
 
 
 module.exports = router;
