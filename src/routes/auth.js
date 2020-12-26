@@ -32,9 +32,10 @@ router.post('/department',async (req, res) => {
 
 // Get admin details
 
-router.get("/department",auth,async (req,res)=>{
+router.get("/department",auth('admin'),async (req,res)=>{
     try {
-        const[results,fields] =  await mysql.query("SELECT * FROM department WHERE adminuser = ?",[req.user.email]);
+        const data = req.body;
+        const[results,fields] =  await mysql.query("SELECT * FROM department WHERE adminuser = ?",[data.adminuser]);
             const userString = JSON.stringify(results[0]);
             const user = JSON.parse(userString);
             delete user.adminpass;
@@ -75,8 +76,7 @@ router.post("/admin/login",async (req,res)=>{
 
 //register student
 
-
-router.post("/admin/student",auth, async (req,res)=>{
+router.post("/admin/student",auth('admin'), async (req,res)=>{
     try {
         const data = req.body
         const[results] = await mysql.query("SELECT usn AS usn FROM student WHERE usn = ?",[data.usn])
@@ -97,7 +97,7 @@ router.post("/admin/student",auth, async (req,res)=>{
 
 //update student
 
-router.put("/admin/student",auth, async (req,res)=>{
+router.put("/admin/student",auth('admin'), async (req,res)=>{
     try {
         const data = req.body
         
@@ -113,7 +113,7 @@ router.put("/admin/student",auth, async (req,res)=>{
 
 //register teacher
 
-router.post("/admin/teacher",auth, async (req,res)=>{
+router.post("/admin/teacher",auth('admin'), async (req,res)=>{
     try {
         const data = req.body
         const[results] = await mysql.query("SELECT teacherid AS teacherid FROM teacher WHERE teacherid = ?",[data.teacherid])
@@ -134,7 +134,7 @@ router.post("/admin/teacher",auth, async (req,res)=>{
 
 //update teacher
 
-router.put("/admin/teacher",auth, async (req,res)=>{
+router.put("/admin/teacher",auth('admin'), async (req,res)=>{
     try {
         const data = req.body
         
@@ -150,7 +150,7 @@ router.put("/admin/teacher",auth, async (req,res)=>{
 
 //add timetable
 
-router.post('/admin/timetable',auth,async (req, res) => {
+router.post('/admin/timetable',auth('admin'),async (req, res) => {
     const data = req.body
     const [results,fields] = await mysql.query("INSERT INTO timetable (sectionid,yearno,semester,deptname,deptid) values (?)", [[data.sectionid,data.yearno,data.semester,data.department,data.deptid]])
     res.json({"msg":"timetable added"})
@@ -159,7 +159,7 @@ router.post('/admin/timetable',auth,async (req, res) => {
 
 //edit timetable
 
-router.put("/admin/timetable",auth, async (req,res)=>{
+router.put("/admin/timetable",auth('admin'), async (req,res)=>{
     try {
         const data = req.body
         
@@ -175,7 +175,7 @@ router.put("/admin/timetable",auth, async (req,res)=>{
 
 //create follows table(student - section relation)
 
-router.post('/admin/follows',auth,async (req, res) => {
+router.post('/admin/follows',auth('admin'),async (req, res) => {
     const data = req.body
     const [results,fields] = await mysql.query("INSERT INTO follows (usn,sectionid) values (?)", [[data.usn,data.sectionid]])
     res.json({"msg":"follows entry added"})
@@ -183,7 +183,7 @@ router.post('/admin/follows',auth,async (req, res) => {
 
 //create faculty of(teacher - department relation)
 
-router.post('/admin/facultyof',auth,async (req, res) => {
+router.post('/admin/facultyof',auth('admin'),async (req, res) => {
     const data = req.body
     const [results,fields] = await mysql.query("INSERT INTO facultyof (teacherid,deptid) values (?)", [[data.teacherid,data.deptid]])
     res.json({"msg":"facultyof entry added"})
@@ -191,7 +191,7 @@ router.post('/admin/facultyof',auth,async (req, res) => {
 
 //create classroom
 
-router.post('/admin/classroom'/*,auth*/,async (req, res) => {
+router.post('/admin/classroom',auth('admin'),async (req, res) => {
     const data = req.body
     const [results,fields] = await mysql.query("INSERT INTO classroom (classid,materials,announcements) values (?)", [[data.classid,data.materials,data.announcements]])
     res.json({"msg":"classroom added"})
@@ -199,7 +199,7 @@ router.post('/admin/classroom'/*,auth*/,async (req, res) => {
 
 //create teaches ( teacherid - classid)
 
-router.post('/admin/teaches'/*,auth*/,async (req, res) => {
+router.post('/admin/teaches',auth('admin'),async (req, res) => {
     const data = req.body
     const [results,fields] = await mysql.query("INSERT INTO teaches (teacherid,classid) values (?)", [[data.teacherid,data.classid]])
     res.json({"msg":"teaches relation added"})
@@ -207,7 +207,7 @@ router.post('/admin/teaches'/*,auth*/,async (req, res) => {
 
 //create attends ( studentid - classid)
 
-router.post('/admin/attends'/*,auth*/,async (req, res) => {
+router.post('/admin/attends',auth('admin'),async (req, res) => {
     const data = req.body
     const [results,fields] = await mysql.query("INSERT INTO attends (usn,classid) values (?)", [[data.usn,data.classid]])
     res.json({"msg":"attends relation added"})
@@ -215,7 +215,7 @@ router.post('/admin/attends'/*,auth*/,async (req, res) => {
 
 //create events
 
-router.post('/admin/events'/*,auth*/,async (req, res) => {
+router.post('/admin/events',auth('admin'),async (req, res) => {
     const data = req.body
     const [results,fields] = await mysql.query("INSERT INTO events (eventid,fromtime,totime,ondate,link,feedback,classid,sectionid) values (?)", [[data.eventid,data.fromtime,data.totime,data.ondate,data.link,data.feedback,data.classid,data.sectionid]])
     res.json({"msg":"event added"})
@@ -223,7 +223,7 @@ router.post('/admin/events'/*,auth*/,async (req, res) => {
 
 //create usestt (teacherid - sectionid)
 
-router.post('/admin/usestt'/*,auth*/,async (req, res) => {
+router.post('/admin/usestt',auth('admin'),async (req, res) => {
     const data = req.body
     const [results,fields] = await mysql.query("INSERT INTO usestt (teacherid,sectionid) values (?)", [[data.teacherid,data.sectionid]])
     res.json({"msg":"usestt relation added"})

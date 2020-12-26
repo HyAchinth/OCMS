@@ -1,0 +1,141 @@
+
+
+### auth create new deptartment&admin
+
+ POST http://localhost:3000/auth/department
+ Content-Type: application/json
+
+ {"deptname":"Math", "adminuser":"Judy", "adminpass":"password"}
+
+
+###adminlogin
+ POST http://localhost:3000/auth/admin/login
+ Content-Type: application/json
+
+ {"adminuser":"Judy", "adminpass":"password"}
+
+###get admin details
+GET http://localhost:3000/auth/department
+Content-Type: application/json
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiSnVkeSIsInVzZXJUeXBlIjoiYWRtaW4ifSwiaWF0IjoxNjA5MDA3MTM4LCJleHAiOjE2MDkwOTM1Mzh9.EA7c1uoIYMwkZXLeIkHFUVvGdPNHnxmMx2KT--4rEu8
+
+{"adminuser":"Judy"}
+###add student
+
+POST http://localhost:3000/auth/admin/student
+Content-Type: application/json
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzbiI6IjFydjE4Y3MwMDciLCJ1c2VyVHlwZSI6InN0dWRlbnQifSwiaWF0IjoxNjA4OTk1NTU4LCJleHAiOjE2MDkwODE5NTh9.IQbrW1sSLDqD8JXmNBSrLK1QpZJd9imtkoVl3S8Sxug
+
+{"usn":"1rv18cs101","stname":"Sachin","emailid":"sachin@gmail.com","yearno":4,"semester":8,"studentpass":"password","deptid":2,"sectionid":"1A"}
+
+###update student
+
+PUT http://localhost:3000/auth/admin/student
+Content-Type: application/json
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiSnVkeSIsInVzZXJUeXBlIjoiYWRtaW4ifSwiaWF0IjoxNjA4ODg4NTI3LCJleHAiOjE2MDg5NzQ5Mjd9.YT5S3xD5D6NKy8qlmUwoL1FfUqM-DI81jNj9HAO-lK0
+
+{"usn":"1rv18cs111","stname":"Sammy","emailid":"sammy@gmail.com","yearno":4,"semester":8,"studentpass":"password","deptid":2,"sectionid":"1A"}
+
+###add teacher
+
+POST http://localhost:3000/auth/admin/teacher
+Content-Type: application/json
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiSnVkeSIsInVzZXJUeXBlIjoiYWRtaW4ifSwiaWF0IjoxNjA4ODg5NzkwLCJleHAiOjE2MDg5NzYxOTB9.jXVo94Mm8hxxJwSS0To6VxQ40878GNIo5LyEgvbj7RY
+
+{"teacherid":"1","tname":"Iruka","emailid":"dlsnf@gmail.com","pass":"password"}
+
+###update teacher
+
+PUT http://localhost:3000/auth/admin/teacher
+Content-Type: application/json
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiSnVkeSIsInVzZXJUeXBlIjoiYWRtaW4ifSwiaWF0IjoxNjA4ODg5NzkwLCJleHAiOjE2MDg5NzYxOTB9.jXVo94Mm8hxxJwSS0To6VxQ40878GNIo5LyEgvbj7RY
+
+{"teacherid":"1","tname":"Iruka","emailid":"daalsnf@gmail.com","pass":"password"}
+
+###add timetable
+
+POST http://localhost:3000/auth/admin/timetable
+Content-Type: application/json
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiSnVkeSIsInVzZXJUeXBlIjoiYWRtaW4ifSwiaWF0IjoxNjA4ODkwNDQwLCJleHAiOjE2MDg5NzY4NDB9.IGLPq8szlnUK4KKddaK6VzLMhf6tB5wTTtHd-4QNzn8
+
+{"sectionid":"1B","yearno":3,"semester":6,"deptname":"Math","deptid":"2"}
+
+###update timetable
+PUT http://localhost:3000/auth/admin/timetable
+Content-Type: application/json
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiSnVkeSIsInVzZXJUeXBlIjoiYWRtaW4ifSwiaWF0IjoxNjA4ODkwNDQwLCJleHAiOjE2MDg5NzY4NDB9.IGLPq8szlnUK4KKddaK6VzLMhf6tB5wTTtHd-4QNzn8
+
+{"sectionid":"1B","yearno":3,"semester":69,"deptname":"Math","deptid":"2"}
+
+###create follows
+POST http://localhost:3000/auth/admin/follows
+Content-Type: application/json
+
+{"usn":"1rv18cs111","sectionid":"1AA"}
+
+###create facultyof
+POST http://localhost:3000/auth/admin/facultyof
+Content-Type: application/json
+
+{"teacherid":"1","deptid":"1"}
+
+###create classroom
+POST http://localhost:3000/auth/admin/classroom
+Content-Type: application/json
+
+{"classid":"1","materials":"link.exe","announcements":"ann.exe"}
+
+###create teaches
+POST http://localhost:3000/auth/admin/teaches
+Content-Type: application/json
+
+{"teacherid":"1","classid":"1"}
+
+###create attends
+POST http://localhost:3000/auth/admin/attends
+Content-Type: application/json
+
+{"usn":"1rv18cs007","classid":"1"}
+
+###create events
+POST http://localhost:3000/auth/admin/events
+Content-Type: application/json
+
+{"eventid":"2","fromtime":"9:20:0","totime":"10:20:0","ondate":"2020-12-6","link":"google.com","feedback":"lemaoxoxo","classid":"1","sectionid":"1A"}
+
+###create usestt
+POST http://localhost:3000/auth/admin/usestt
+Content-Type: application/json
+
+{"teacherid":"1","sectionid":"1A"}
+
+
+###student login
+
+POST http://localhost:3000/student/login
+Content-Type: application/json
+
+{"usn":"1rv18cs007","studentpass":"password123"}
+
+###teacher login
+
+POST http://localhost:3000/teacher/login
+Content-Type: application/json
+
+{"teacherid":"1","pass":"password123"}
+
+###student update password
+
+PUT http://localhost:3000/student/login
+Content-Type: application/json
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InRlYWNoZXJpZCI6IjEiLCJ1c2VyVHlwZSI6InRlYWNoZXIifSwiaWF0IjoxNjA5MDAzMDk4LCJleHAiOjE2MDkwODk0OTh9.hhovpbHhfKcB3RN38hVlw71q3vSoVMAW7_tKV698fpU
+
+{"usn":"1rv18cs007","studentpass":"password1234"}
+
+###teacher update password
+
+PUT http://localhost:3000/teacher/login
+Content-Type: application/json
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InRlYWNoZXJpZCI6IjEiLCJ1c2VyVHlwZSI6InRlYWNoZXIifSwiaWF0IjoxNjA5MDAzMDk4LCJleHAiOjE2MDkwODk0OTh9.hhovpbHhfKcB3RN38hVlw71q3vSoVMAW7_tKV698fpU
+
+{"teacherid":"1","pass":"password123"}

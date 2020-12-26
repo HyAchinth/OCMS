@@ -6,7 +6,7 @@ const express = require("express");
  * @param {*} res 
  * @param {*} next 
  */
-const auth = async (req,res,next)=>{
+const auth = (role)=>async (req,res,next)=>{
     try {
         const token = req.header("x-auth-token");
         console.log(req.headers)
@@ -14,6 +14,10 @@ const auth = async (req,res,next)=>{
             if(error) throw error;
             req.user=decoded.user;
             req.token=token;
+            if(req.user.userType!=role){
+                throw new Error("Wrong Role!")
+            }
+
             next();
         });
     } catch (error) {

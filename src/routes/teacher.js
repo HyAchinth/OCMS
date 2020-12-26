@@ -36,7 +36,7 @@ router.post("/login",async (req,res)=>{
 
 //change password
 
-router.put("/login",auth, async (req,res)=>{
+router.put("/login",auth('teacher'), async (req,res)=>{
     try {
         const data = req.body
         
