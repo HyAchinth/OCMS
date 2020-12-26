@@ -1,4 +1,3 @@
-
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const router = express.Router()
@@ -7,20 +6,20 @@ const auth = require("../middleware/auth");
 const generateAuthToken = require("../token/generateAuthToken")
 
 
-//Student Login
+//Teacher Login
 
 
 router.post("/login",async (req,res)=>{
     try {
-        const [results,fields] =  await mysql.query("SELECT usn,studentpass FROM student WHERE usn = ?",[req.body.usn]);
+        const [results,fields] =  await mysql.query("SELECT teacherid,pass FROM teacher WHERE teacherid = ?",[req.body.teacherid]);
         if(results.length==0){
             return res.status(400).json({msg:"Authentication Error!"});
         }
         const userString = JSON.stringify(results[0]);
         const user_data = JSON.parse(userString);
-        const user = {usn:user_data.usn,userType: "student"}
-        const str = user_data.studentpass
-        const isMatch = str.localeCompare(req.body.studentpass);
+        const user = {teacherid:user_data.teacherid,userType: "teacher"}
+        const str = user_data.pass
+        const isMatch = str.localeCompare(req.body.pass);
         if(!isMatch){
             generateAuthToken(user,(token)=>{
                 res.json({token});
@@ -41,7 +40,7 @@ router.put("/login",auth, async (req,res)=>{
     try {
         const data = req.body
         
-        const [results2] = await mysql.query("UPDATE student SET studentpass = (?) WHERE usn = (?)", [data.studentpass,data.usn])
+        const [results2] = await mysql.query("UPDATE teacher SET pass = (?) WHERE teacherid = (?)", [data.pass,data.teacherid])
     
     res.json({"msg":"password updated"})
     } catch (error) {

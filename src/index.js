@@ -5,6 +5,7 @@ const {mysql} = require("./db/mysql");
 const port = 3000;
 app.use(express.json());
 app.use("/student",require("./routes/student"));
+app.use("/teacher",require("./routes/teacher"));
 app.use("/auth",require("./routes/auth"));
 
 app.get('/:id',async (req, res) => {
@@ -14,14 +15,6 @@ app.get('/:id',async (req, res) => {
     const dept = JSON.parse(deptString);
     res.json(dept);
     
-})
-
-
-
-app.post('/admin/timetable',async (req, res) => {
-    const data = req.body
-    const [results,fields] = await mysql.query("INSERT INTO timetable (sectionid,yearno,semester,deptname,deptid) values (?)", [[data.sectionid,data.yearno,data.semester,data.department,data.deptid]])
-    res.json({"msg":"timetable added"})
 })
 
 
