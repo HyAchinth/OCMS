@@ -58,7 +58,7 @@ CREATE TABLE facultyof(
 CREATE TABLE classroom(
     classid VARCHAR(255) PRIMARY KEY,
     materials VARCHAR(255),
-    annoncements VARCHAR(255)
+    announcements VARCHAR(255)
 );
 
 CREATE TABLE teaches(

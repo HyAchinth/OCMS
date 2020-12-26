@@ -173,8 +173,64 @@ router.put("/admin/timetable",auth, async (req,res)=>{
    
 })
 
+//create follows table(student - section relation)
+
+router.post('/admin/follows',auth,async (req, res) => {
+    const data = req.body
+    const [results,fields] = await mysql.query("INSERT INTO follows (usn,sectionid) values (?)", [[data.usn,data.sectionid]])
+    res.json({"msg":"follows entry added"})
+})
+
+//create faculty of(teacher - department relation)
+
+router.post('/admin/facultyof',auth,async (req, res) => {
+    const data = req.body
+    const [results,fields] = await mysql.query("INSERT INTO facultyof (teacherid,deptid) values (?)", [[data.teacherid,data.deptid]])
+    res.json({"msg":"facultyof entry added"})
+})
+
+//create classroom
+
+router.post('/admin/classroom'/*,auth*/,async (req, res) => {
+    const data = req.body
+    const [results,fields] = await mysql.query("INSERT INTO classroom (classid,materials,announcements) values (?)", [[data.classid,data.materials,data.announcements]])
+    res.json({"msg":"classroom added"})
+})
+
+//create teaches ( teacherid - classid)
+
+router.post('/admin/teaches'/*,auth*/,async (req, res) => {
+    const data = req.body
+    const [results,fields] = await mysql.query("INSERT INTO teaches (teacherid,classid) values (?)", [[data.teacherid,data.classid]])
+    res.json({"msg":"teaches relation added"})
+})
+
+//create attends ( studentid - classid)
+
+router.post('/admin/attends'/*,auth*/,async (req, res) => {
+    const data = req.body
+    const [results,fields] = await mysql.query("INSERT INTO attends (usn,classid) values (?)", [[data.usn,data.classid]])
+    res.json({"msg":"attends relation added"})
+})
+
+//create events
+
+router.post('/admin/events'/*,auth*/,async (req, res) => {
+    const data = req.body
+    const [results,fields] = await mysql.query("INSERT INTO events (eventid,fromtime,totime,ondate,link,feedback,classid,sectionid) values (?)", [[data.eventid,data.fromtime,data.totime,data.ondate,data.link,data.feedback,data.classid,data.sectionid]])
+    res.json({"msg":"event added"})
+})
+
+//create usestt (teacherid - sectionid)
+
+router.post('/admin/usestt'/*,auth*/,async (req, res) => {
+    const data = req.body
+    const [results,fields] = await mysql.query("INSERT INTO usestt (teacherid,sectionid) values (?)", [[data.teacherid,data.sectionid]])
+    res.json({"msg":"usestt relation added"})
+})
 
 
 
 
 module.exports = router;
+
