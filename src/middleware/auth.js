@@ -10,7 +10,7 @@ const auth = (role)=>async (req,res,next)=>{
     try {
         const token = req.header("x-auth-token");
         console.log(req.headers)
-        jwt.verify(token,"secret",(error,decoded)=>{
+        jwt.verify(token,process.env.ACCESS_TOKEN,(error,decoded)=>{
             if(error) throw error;
             req.user=decoded.user;
             req.token=token;

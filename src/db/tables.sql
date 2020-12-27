@@ -58,7 +58,8 @@ CREATE TABLE facultyof(
 CREATE TABLE classroom(
     classid VARCHAR(255) PRIMARY KEY,
     materials VARCHAR(255),
-    announcements VARCHAR(255)
+    announcements VARCHAR(255),
+    classname varchar(255)
 );
 
 CREATE TABLE teaches(
@@ -98,4 +99,11 @@ CREATE TABLE usestt(
     PRIMARY KEY(teacherid,sectionid),
     FOREIGN KEY(teacherid) REFERENCES teacher(teacherid) ON DELETE CASCADE,
     FOREIGN KEY(sectionid) REFERENCES timetable(sectionid) ON DELETE CASCADE
+);
+
+CREATE TABLE material(
+    materialid integer not null auto_increment PRIMARY KEY,
+    materialname VARCHAR(255) not null,
+    classid VARCHAR(255),
+    FOREIGN KEY(classid) REFERENCES classroom(classid) ON DELETE CASCADE
 );
