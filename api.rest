@@ -154,3 +154,20 @@ Content-Type: application/json
 GET http://localhost:3000/teacher/material/4
 Content-Type: application/json
 
+###student downloads file
+
+GET http://localhost:3000/student/material/4
+Content-Type: application/json
+
+
+###teacher adds announcement
+
+POST http://localhost:3000/teacher/announcements
+Content-Type: application/json
+
+{"classid":"1", "announcement":"fsuikdfksd faslflsfnslf dfnsljfdlf testing testing", "dtime":"2020-12-25 9:30:0"}
+
+###teacher removes announcement
+
+DELETE http://localhost:3000/teacher/announcements/3
+Content-Type: application/json

@@ -107,3 +107,11 @@ CREATE TABLE material(
     classid VARCHAR(255),
     FOREIGN KEY(classid) REFERENCES classroom(classid) ON DELETE CASCADE
 );
+
+CREATE TABLE announcements(
+    aid integer not null auto_increment PRIMARY KEY,
+    classid VARCHAR(255),
+    announcement TEXT,
+    dtime DATETIME,
+    FOREIGN KEY(classid) REFERENCES classroom(classid) ON DELETE CASCADE 
+);
