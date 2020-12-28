@@ -244,4 +244,25 @@ router.get(
     }
 );
 
+//view the enrolled subjects
+
+router.post(
+    '/subjects',
+    /*auth('teacher'),*/ async (req, res) => {
+        try {
+            const [
+                results,
+                fields,
+            ] = await mysql.query(
+                'select classname from teaches inner join classroom  on teaches.teacherid = ? and teaches.classid = classroom.classid',
+                [req.body.teacherid]
+            );
+            res.json(results);
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error);
+        }
+    }
+);
+
 module.exports = router;

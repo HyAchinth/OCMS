@@ -190,3 +190,9 @@ POST http://localhost:3000/student/subjects/
 Content-Type: application/json
 
 {"usn":"1rv18cs028"}
+
+### teacher sees enrolled subjects
+POST http://localhost:3000/teacher/subjects/
+Content-Type: application/json
+
+{"teacherid":"1"}
