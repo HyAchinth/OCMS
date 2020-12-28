@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const { mysql } = require('./db/mysql');
 
-const port = 3000;
+const port = 5000;
 app.use(express.json());
 app.use('/student', require('./routes/student'));
 app.use('/teacher', require('./routes/teacher'));
