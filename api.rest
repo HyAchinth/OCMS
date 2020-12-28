@@ -95,7 +95,7 @@ Content-Type: application/json
 POST http://localhost:3000/auth/admin/attends
 Content-Type: application/json
 
-{"usn":"1rv18cs007","classid":"1"}
+{"usn":"1rv18cs007","classid":"2"}
 
 ###create events
 POST http://localhost:3000/auth/admin/events
@@ -167,7 +167,26 @@ Content-Type: application/json
 
 {"classid":"1", "announcement":"fsuikdfksd faslflsfnslf dfnsljfdlf testing testing", "dtime":"2020-12-25 9:30:0"}
 
-###teacher removes announcement
+###teacher gets student list
 
-DELETE http://localhost:3000/teacher/announcements/3
+GET http://localhost:3000/teacher/studentlist/1
 Content-Type: application/json
+
+
+###teacher gets material list
+
+GET http://localhost:3000/teacher/materiallist/1
+Content-Type: application/json
+
+###teacher gets announcement list
+
+GET http://localhost:3000/teacher/announcementlist/1
+Content-Type: application/json
+
+###student can access the above 3 with the change: /student/studentlist/1 etc (replace teacher with student)
+
+### student sees enrolled subjects
+POST http://localhost:3000/student/subjects/
+Content-Type: application/json
+
+{"usn":"1rv18cs028"}

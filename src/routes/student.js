@@ -64,7 +64,7 @@ router.put('/login', auth('student'), async (req, res) => {
 
 router.get(
     '/material/:id',
-    /*auth('teacher'),*/ async (req, res) => {
+    /*auth('student'),*/ async (req, res) => {
         const materialid = req.params.id;
         try {
             const result = await downloader(materialid);
@@ -98,5 +98,84 @@ async function downloader(id) {
             });
     });
 }
+
+//view students list
+
+router.get(
+    '/studentlist/:id',
+    /*auth('student'),*/ async (req, res) => {
+        const [
+            results,
+            fields,
+        ] = await mysql.query(
+            'SELECT usn,stname,emailid FROM student as S WHERE EXISTS(SELECT * FROM attends where S.usn = usn AND classid=?)',
+            [req.params.id]
+        );
+        res.json(results);
+    }
+);
+
+//view materials list
+
+router.get(
+    '/materiallist/:id',
+    /*auth('student'),*/ async (req, res) => {
+        try {
+            const [
+                results,
+                fields,
+            ] = await mysql.query(
+                'SELECT materialname FROM material WHERE classid=?',
+                [req.params.id]
+            );
+            res.json(results);
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error);
+        }
+    }
+);
+
+//view announcements list
+
+router.get(
+    '/announcementlist/:id',
+    /*auth('student'),*/ async (req, res) => {
+        try {
+            const [
+                results,
+                fields,
+            ] = await mysql.query(
+                'SELECT announcement,dtime FROM announcements WHERE classid=?',
+                [req.params.id]
+            );
+            res.json(results);
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error);
+        }
+    }
+);
+
+//view the enrolled subjects
+
+router.post(
+    '/subjects',
+    /*auth('student'),*/ async (req, res) => {
+        try {
+            const [
+                results,
+                fields,
+            ] = await mysql.query(
+                'select classname from attends inner join classroom  on attends.usn = ? and attends.classid = classroom.classid',
+                [req.body.usn]
+            );
+            res.json(results);
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error);
+        }
+    }
+);
 
 module.exports = router;
