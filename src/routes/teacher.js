@@ -16,23 +16,23 @@ router.post('/login', async (req, res) => {
             results,
             fields,
         ] = await mysql.query(
-            'SELECT teacherid,pass FROM teacher WHERE teacherid = ?',
-            [req.body.teacherid]
+            'SELECT emailid,pass FROM teacher WHERE emailid = ?',
+            [req.body.emailid]
         );
         if (results.length == 0) {
-            return res.status(400).json({ msg: 'Authentication Error!' });
+            return res.status(400).json({ok: false, auth: false, msg: 'Authentication Error!' });
         }
         const userString = JSON.stringify(results[0]);
         const user_data = JSON.parse(userString);
-        const user = { teacherid: user_data.teacherid, userType: 'teacher' };
+        const user = { emailid: user_data.emailid, userType: 'teacher' };
         const str = user_data.pass;
-        const isMatch = str.localeCompare(req.body.pass);
-        if (!isMatch) {
+        const isMatch = await bcrypt.compare(req.body.pass, str);
+        if (isMatch) {
             generateAuthToken(user, token => {
-                res.json({ token });
+                res.json({ok:true, auth: true, token });
             });
         } else {
-            res.status(400).json({ msg: 'Authentication Error!' });
+            res.status(400).json({ok: true, auth: false, msg: 'Authentication Error!' });
         }
     } catch (error) {
         res.status(500).send('Server Error!');
@@ -45,7 +45,8 @@ router.post('/login', async (req, res) => {
 router.put('/login', auth('teacher'), async (req, res) => {
     try {
         const data = req.body;
-
+        const salt = await bcrypt.genSalt(10);
+        data.pass = await bcrypt.hash(data.pass, salt);
         const [
             results2,
         ] = await mysql.query(
