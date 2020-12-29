@@ -62,6 +62,91 @@ router.put('/login', auth('student'), async (req, res) => {
     }
 });
 
+//Get all students
+
+router.get('/', async(req, res) => {
+    try{
+        const [
+            results
+        ] = await mysql.query(
+            'SELECT usn, stname, emailid, yearno, semester, sectionid from student'
+        );
+
+        const studentString = JSON.stringify(results);
+        const students = JSON.parse(studentString)
+        res.json({ok: true, students});
+    } catch(error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
+//Get all students by deptid
+
+router.get('/dept/:deptid', async(req, res) => {
+    try{
+        const data = req.params;
+
+        const [
+            results
+        ] = await mysql.query(
+            'SELECT usn, stname, emailid, yearno, semester, sectionid from student where deptid = (?)',
+            [data.deptid] 
+        );
+
+        const studentString = JSON.stringify(results);
+        const students = JSON.parse(studentString)
+        res.json({ok: true, students});
+    } catch(error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
+//Get all students by sectionid
+
+router.get('/section/:sectionid', async(req, res) => {
+    try{
+        const data = req.params;
+
+        const [
+            results
+        ] = await mysql.query(
+            'SELECT usn, stname, emailid, yearno, semester, sectionid from student where sectionid = (?)',
+            [data.sectionid] 
+        );
+
+        const studentString = JSON.stringify(results);
+        const students = JSON.parse(studentString)
+        res.json({ok: true, students});
+    } catch(error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
+//Get one student
+
+router.get('/:usn', async(req, res) => {
+    try{
+        const data = req.params;
+
+        const [
+            results
+        ] = await mysql.query(
+            'SELECT usn, stname, emailid, yearno, semester, deptid, sectionid from student where usn = (?)',
+            [data.usn] 
+        );
+
+        const studentString = JSON.stringify(results[0]);
+        const student = JSON.parse(studentString)
+        res.json({ok: true, student});
+    } catch(error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
 //Download Material
 
 router.get(

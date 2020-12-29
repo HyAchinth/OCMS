@@ -39,9 +39,9 @@ router.post('/department', async (req, res) => {
 
 // Get admin details
 
-router.get('/department', auth('admin'), async (req, res) => {
+router.get('/department/:adminuser', auth('admin'), async (req, res) => {
     try {
-        const data = req.body;
+        data = req.params;
         const [
             results,
             fields,
@@ -51,7 +51,7 @@ router.get('/department', auth('admin'), async (req, res) => {
         const userString = JSON.stringify(results[0]);
         const user = JSON.parse(userString);
         delete user.adminpass;
-        res.json(user);
+        res.json({ok: true, dept: user});
     } catch (error) {
         res.status(500).send('Server Error!');
         console.log(error);
@@ -72,7 +72,7 @@ router.post('/admin/login', async (req, res) => {
             [req.body.adminuser]
         );
         if (results.length == 0) {
-            return res.status(400).json({ msg: 'Authentication Error!' });
+            return res.status(400).json({ok: false, auth: false, msg: 'Authentication Error!' });
         }
         const userString = JSON.stringify(results[0]);
         const user_data = JSON.parse(userString);
@@ -83,10 +83,10 @@ router.post('/admin/login', async (req, res) => {
         );
         if (isMatch) {
             generateAuthToken(user, token => {
-                res.json({ token });
+                res.json({ok: true, auth: true, token });
             });
         } else {
-            res.status(400).json({ msg: 'Authentication Error!' });
+            res.status(400).json({ok: true, auth: false, msg: 'Authentication Error!' });
         }
     } catch (error) {
         res.status(500).send('Server Error!');
@@ -99,6 +99,8 @@ router.post('/admin/login', async (req, res) => {
 router.post('/admin/student', auth('admin'), async (req, res) => {
     try {
         const data = req.body;
+        data.usn = String(data.usn).toUpperCase();
+
         const [
             results,
         ] = await mysql.query('SELECT usn AS usn FROM student WHERE usn = ?', [
