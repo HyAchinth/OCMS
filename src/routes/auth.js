@@ -145,6 +145,7 @@ router.post('/admin/student', auth('admin'), async (req, res) => {
                     data.emailid,
                     data.yearno,
                     data.semester,
+                    data.studentpass,
                     data.deptid,
                     data.sectionid,
                 ],
