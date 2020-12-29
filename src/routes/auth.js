@@ -58,6 +58,29 @@ router.get('/department/:adminuser', auth('admin'), async (req, res) => {
     }
 });
 
+//Update admin details
+
+router.put('/department', async (req, res) => {
+    try {
+        const data = req.body;
+        const [
+            results,
+        ] = await mysql.query(
+            'UPDATE department SET deptname = (?), adminuser = (?) where deptid = (?)',
+            [
+                data.deptname,
+                data.adminuser,
+                data.deptid
+            ]
+        );
+        res.json({ ok: true, msg: 'department updated' });
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
 /*
 Admin Login
 */
@@ -100,7 +123,7 @@ router.post('/admin/student', auth('admin'), async (req, res) => {
     try {
         const data = req.body;
         data.usn = String(data.usn).toUpperCase();
-
+        console.log(data)
         const [
             results,
         ] = await mysql.query('SELECT usn AS usn FROM student WHERE usn = ?', [
@@ -122,14 +145,13 @@ router.post('/admin/student', auth('admin'), async (req, res) => {
                     data.emailid,
                     data.yearno,
                     data.semester,
-                    data.studentpass,
                     data.deptid,
                     data.sectionid,
                 ],
             ]
         );
 
-        res.json({ msg: 'student added' });
+        res.json({ ok: true, msg: 'student added' });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -145,21 +167,41 @@ router.put('/admin/student', auth('admin'), async (req, res) => {
         const [
             results2,
         ] = await mysql.query(
-            'UPDATE student SET usn = (?),stname = (?),emailid = (?),yearno = (?),semester = (?),studentpass = (?),deptid = (?),sectionid=(?) WHERE usn = (?)',
+            'UPDATE student SET stname = (?),emailid = (?),yearno = (?),semester = (?),deptid = (?),sectionid=(?) WHERE usn = (?)',
             [
-                data.usn,
                 data.stname,
                 data.emailid,
                 data.yearno,
                 data.semester,
-                data.studentpass,
                 data.deptid,
                 data.sectionid,
                 data.usn,
             ]
         );
 
-        res.json({ msg: 'student updated' });
+        res.json({ ok: true, msg: 'student updated' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+//delete student
+
+router.delete('/admin/student/:usn', auth('admin'), async (req, res) => {
+    try {
+        const data = req.params;
+
+        const [
+            results2,
+        ] = await mysql.query(
+            'DELETE from student where usn = (?)',
+            [
+                data.usn
+            ]
+        );
+
+        res.json({ ok: true, msg: 'student deleted' });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -185,8 +227,8 @@ router.post('/admin/teacher', auth('admin'), async (req, res) => {
         const [
             results2,
         ] = await mysql.query(
-            'INSERT INTO teacher (teacherid,tname,emailid,pass) VALUES (?)',
-            [[data.teacherid, data.tname, data.emailid, data.pass]]
+            'INSERT INTO teacher (teacherid,tname,emailid,pass,deptid) VALUES (?)',
+            [[data.teacherid, data.tname, data.emailid, data.pass, data.deptid]]
         );
 
         res.json({ msg: 'teacher added' });
@@ -205,12 +247,11 @@ router.put('/admin/teacher', auth('admin'), async (req, res) => {
         const [
             results2,
         ] = await mysql.query(
-            'UPDATE teacher SET teacherid = (?),tname = (?),emailid = (?),pass = (?) WHERE  teacherid = (?)',
+            'UPDATE teacher SET tname = (?),emailid = (?),deptid = (?) WHERE  teacherid = (?)',
             [
-                data.teacherid,
                 data.tname,
                 data.emailid,
-                data.pass,
+                data.deptid,
                 data.teacherid,
             ]
         );

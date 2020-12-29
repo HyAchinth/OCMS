@@ -41,7 +41,8 @@ CREATE TABLE teacher(
     teacherid VARCHAR(255) PRIMARY KEY,
     tname VARCHAR(255),
     emailid VARCHAR(255),
-    pass VARCHAR(255)    
+    pass VARCHAR(255),    
+    FOREIGN KEY(deptid) REFERENCES department(deptid) ON DELETE CASCADE,
 );
 
 

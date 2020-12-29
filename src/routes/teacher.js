@@ -61,6 +61,74 @@ router.put('/login', auth('teacher'), async (req, res) => {
     }
 });
 
+//Get all students
+
+router.get('/', async(req, res) => {
+    try{
+        const [
+            results
+        ] = await mysql.query(
+            'SELECT teacherid,tname,emailid from teacher'
+        );
+
+        const teacherString = JSON.stringify(results);
+        const teachers = JSON.parse(teacherString)
+        res.json({ok: true, teachers});
+    } catch(error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
+//Get all teachers by deptid
+
+router.get('/dept/:deptid', async(req, res) => {
+    try{
+        const data = req.params;
+
+        const [
+            results
+        ] = await mysql.query(
+            'SELECT teacherid,tname,emailid from teacher where deptid = (?)',
+            [data.deptid] 
+        );
+
+        const teacherString = JSON.stringify(results);
+        const teachers = JSON.parse(teacherString)
+        res.json({ok: true, teachers});
+    } catch(error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
+//Get one teacher
+
+router.get('/:teacherid', async(req, res) => {
+    try{
+        const data = req.params;
+
+        const [
+            results
+        ] = await mysql.query(
+            'SELECT teacherid,tname,emailid,deptid from teacher where teacherid = (?)',
+            [data.teacherid] 
+        );
+            
+        if(results.length === 0) {
+            res.send({ok: true, teacher: {}})
+        }
+        else {
+            const teacherString = JSON.stringify(results[0]);
+            const teacher = JSON.parse(teacherString)
+            res.json({ok: true, teacher});
+        }
+    } catch(error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
+
 /*upload material as teacher
 expected filename,classid,file as array
 */

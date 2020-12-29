@@ -137,10 +137,15 @@ router.get('/:usn', async(req, res) => {
             'SELECT usn, stname, emailid, yearno, semester, deptid, sectionid from student where usn = (?)',
             [data.usn] 
         );
-
-        const studentString = JSON.stringify(results[0]);
-        const student = JSON.parse(studentString)
-        res.json({ok: true, student});
+            
+        if(results.length === 0) {
+            res.send({ok: true, student: {}})
+        }
+        else {
+            const studentString = JSON.stringify(results[0]);
+            const student = JSON.parse(studentString)
+            res.json({ok: true, student});
+        }
     } catch(error) {
         console.log(error);
         res.status(500).send(error);
