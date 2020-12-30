@@ -51,7 +51,7 @@ router.get('/department/:adminuser', auth('admin'), async (req, res) => {
         const userString = JSON.stringify(results[0]);
         const user = JSON.parse(userString);
         delete user.adminpass;
-        res.json({ok: true, dept: user});
+        res.json({ ok: true, dept: user });
     } catch (error) {
         res.status(500).send('Server Error!');
         console.log(error);
@@ -67,14 +67,9 @@ router.put('/department', async (req, res) => {
             results,
         ] = await mysql.query(
             'UPDATE department SET deptname = (?), adminuser = (?) where deptid = (?)',
-            [
-                data.deptname,
-                data.adminuser,
-                data.deptid
-            ]
+            [data.deptname, data.adminuser, data.deptid]
         );
         res.json({ ok: true, msg: 'department updated' });
-        
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -95,7 +90,9 @@ router.post('/admin/login', async (req, res) => {
             [req.body.adminuser]
         );
         if (results.length == 0) {
-            return res.status(400).json({ok: false, auth: false, msg: 'Authentication Error!' });
+            return res
+                .status(400)
+                .json({ ok: false, auth: false, msg: 'Authentication Error!' });
         }
         const userString = JSON.stringify(results[0]);
         const user_data = JSON.parse(userString);
@@ -106,10 +103,14 @@ router.post('/admin/login', async (req, res) => {
         );
         if (isMatch) {
             generateAuthToken(user, token => {
-                res.json({ok: true, auth: true, token });
+                res.json({ ok: true, auth: true, token });
             });
         } else {
-            res.status(400).json({ok: true, auth: false, msg: 'Authentication Error!' });
+            res.status(400).json({
+                ok: true,
+                auth: false,
+                msg: 'Authentication Error!',
+            });
         }
     } catch (error) {
         res.status(500).send('Server Error!');
@@ -123,7 +124,7 @@ router.post('/admin/student', auth('admin'), async (req, res) => {
     try {
         const data = req.body;
         data.usn = String(data.usn).toUpperCase();
-        console.log(data)
+        console.log(data);
         const [
             results,
         ] = await mysql.query('SELECT usn AS usn FROM student WHERE usn = ?', [
@@ -195,12 +196,9 @@ router.delete('/admin/student/:usn', auth('admin'), async (req, res) => {
 
         const [
             results2,
-        ] = await mysql.query(
-            'DELETE from student where usn = (?)',
-            [
-                data.usn
-            ]
-        );
+        ] = await mysql.query('DELETE from student where usn = (?)', [
+            data.usn,
+        ]);
 
         res.json({ ok: true, msg: 'student deleted' });
     } catch (error) {
@@ -249,15 +247,29 @@ router.put('/admin/teacher', auth('admin'), async (req, res) => {
             results2,
         ] = await mysql.query(
             'UPDATE teacher SET tname = (?),emailid = (?),deptid = (?) WHERE  teacherid = (?)',
-            [
-                data.tname,
-                data.emailid,
-                data.deptid,
-                data.teacherid,
-            ]
+            [data.tname, data.emailid, data.deptid, data.teacherid]
         );
 
         res.json({ msg: 'teacher updated' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+//delete student
+
+router.delete('/admin/teacher/:teacherid', auth('admin'), async (req, res) => {
+    try {
+        const data = req.params;
+
+        const [
+            results2,
+        ] = await mysql.query('DELETE from teacher where teacherid = (?)', [
+            data.teacherid,
+        ]);
+
+        res.json({ ok: true, msg: 'teacher deleted' });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -272,16 +284,8 @@ router.post('/admin/timetable', auth('admin'), async (req, res) => {
         results,
         fields,
     ] = await mysql.query(
-        'INSERT INTO timetable (sectionid,yearno,semester,deptname,deptid) values (?)',
-        [
-            [
-                data.sectionid,
-                data.yearno,
-                data.semester,
-                data.department,
-                data.deptid,
-            ],
-        ]
+        'INSERT INTO timetable (sectionid,yearno,semester,deptid) values (?)',
+        [[data.sectionid, data.yearno, data.semester, data.deptid]]
     );
     res.json({ msg: 'timetable added' });
 });
@@ -295,12 +299,11 @@ router.put('/admin/timetable', auth('admin'), async (req, res) => {
         const [
             results2,
         ] = await mysql.query(
-            'UPDATE timetable SET sectionid = (?),yearno = (?), semester = (?),deptname = (?),deptid = (?) where sectionid=(?)',
+            'UPDATE timetable SET sectionid = (?),yearno = (?), semester = (?),deptid = (?) where sectionid=(?)',
             [
                 data.sectionid,
                 data.yearno,
                 data.semester,
-                data.department,
                 data.deptid,
                 data.sectionid,
             ]
@@ -313,32 +316,29 @@ router.put('/admin/timetable', auth('admin'), async (req, res) => {
     }
 });
 
-//create follows table(student - section relation)
+//delete student
 
-router.post('/admin/follows', auth('admin'), async (req, res) => {
-    const data = req.body;
-    const [
-        results,
-        fields,
-    ] = await mysql.query('INSERT INTO follows (usn,sectionid) values (?)', [
-        [data.usn, data.sectionid],
-    ]);
-    res.json({ msg: 'follows entry added' });
-});
+router.delete(
+    '/admin/timetable/:sectionid',
+    auth('admin'),
+    async (req, res) => {
+        try {
+            const data = req.params;
 
-//create faculty of(teacher - department relation)
+            const [
+                results2,
+            ] = await mysql.query(
+                'DELETE from timetable where sectionid = (?)',
+                [data.sectionid]
+            );
 
-router.post('/admin/facultyof', auth('admin'), async (req, res) => {
-    const data = req.body;
-    const [
-        results,
-        fields,
-    ] = await mysql.query(
-        'INSERT INTO facultyof (teacherid,deptid) values (?)',
-        [[data.teacherid, data.deptid]]
-    );
-    res.json({ msg: 'facultyof entry added' });
-});
+            res.json({ ok: true, msg: 'timetable deleted' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error);
+        }
+    }
+);
 
 //create classroom
 
@@ -348,8 +348,8 @@ router.post('/admin/classroom', auth('admin'), async (req, res) => {
         results,
         fields,
     ] = await mysql.query(
-        'INSERT INTO classroom (classid,materials,announcements,classname) values (?)',
-        [[data.classid, data.materials, data.announcements, data.classname]]
+        'INSERT INTO classroom (classid,classname) values (?)',
+        [[data.classid, data.classname]]
     );
     res.json({ msg: 'classroom added' });
 });
