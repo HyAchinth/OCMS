@@ -33,24 +33,23 @@ CREATE TABLE teacher(
     teacherid VARCHAR(255) PRIMARY KEY,
     tname VARCHAR(255),
     emailid VARCHAR(255),
-    pass VARCHAR(255),    
+    pass VARCHAR(255),
+    deptid INT,    
     FOREIGN KEY(deptid) REFERENCES department(deptid) ON DELETE CASCADE,
 );
 
 
 CREATE TABLE classroom(
     classid VARCHAR(255) PRIMARY KEY,
-    materials VARCHAR(255),
-    announcements VARCHAR(255),
     classname varchar(255)
 );
 
 CREATE TABLE teaches(
     teacherid VARCHAR(255),
-    classid VARCHAR(255),
+    classid VARCHAR(255),   
     PRIMARY KEY(teacherid,classid),
     FOREIGN KEY(teacherid) REFERENCES teacher(teacherid) ON DELETE CASCADE,
-    FOREIGN KEY(classid) REFERENCES classroom(classid) ON DELETE CASCADE
+    FOREIGN KEY(classid) REFERENCES classroom(classid) ON DELETE CASCADE    
 );
 
 

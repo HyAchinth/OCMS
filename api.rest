@@ -115,7 +115,7 @@ Content-Type: application/json
 POST http://localhost:5000/student/login
 Content-Type: application/json
 
-{"usn":"1rv18cs007","studentpass":"password123"}
+{"usn":"1rv18cs007","studentpass":"password1234"}
 
 ###teacher login
 
