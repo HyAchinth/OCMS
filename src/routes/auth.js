@@ -4,7 +4,8 @@ const router = express.Router();
 const { mysql } = require('../db/mysql');
 const auth = require('../middleware/auth');
 const generateAuthToken = require('../token/generateAuthToken');
-const generateEvent = require('./event');
+const generateEvent = require('./addevent');
+const generate = require('nanoid/async/generate');
 
 //Crete new department/admin
 
@@ -321,31 +322,6 @@ router.post('/admin/attends', auth('admin'), async (req, res) => {
     res.json({ msg: 'attends relation added' });
 });
 
-//create events
-
-router.post('/admin/events', auth('admin'), async (req, res) => {
-    const data = req.body;
-    const [
-        results,
-        fields,
-    ] = await mysql.query(
-        'INSERT INTO events (eventid,fromtime,totime,ondate,link,feedback,classid,sectionid) values (?)',
-        [
-            [
-                data.eventid,
-                data.fromtime,
-                data.totime,
-                data.ondate,
-                data.link,
-                data.feedback,
-                data.classid,
-                data.sectionid,
-            ],
-        ]
-    );
-    res.json({ msg: 'event added' });
-});
-
 //create usestt (teacherid - sectionid)
 
 router.post('/admin/usestt', auth('admin'), async (req, res) => {
@@ -356,21 +332,67 @@ router.post('/admin/usestt', auth('admin'), async (req, res) => {
     res.json({ msg: 'usestt relation added' });
 });
 
+//create TESTING ENV
+
+router.post(
+    '/admin/events',
+    /*auth('admin'),*/ async (req, res) => {
+        const data = req.body;
+
+        const [
+            results,
+        ] = await mysql.query(
+            'select emailid as email from student inner join attends on student.usn = attends.usn and classid = (?)',
+            [[data.classid]]
+        );
+        const T = JSON.stringify(results);
+        desc = 'Teacher Name:' + results[0].tname;
+        console.log(data.dt.getTime(), data.dt.getDate());
+        res.json({ msg: 'event added' });
+    }
+);
+
 //add event from admin
 router.post(
     '/admin/event',
     /*auth('admin'),*/ async (req, res) => {
-        const { mails, eid, summary, desc, start, end, freq, count } = req.body;
+        const { sectionid, classid, summary, start, end, freq, count } = req.body;
         try {
-            await generateEvent(mails, eid, summary, desc, start, end, freq, count);
-            /*const [
-            results,
-        ] = await mysql.query('INSERT INTO events (eventid,fromtime,totime,ondate,link,classid,sectionid) values (?)', [
-            [data.teacherid, data.sectionid],
-        ]);*/
-            res.json({ msg: 'event relation added' });
+            const eid = await generate('1234567890abcdef', 10);
+
+            const [
+                results,
+            ] = await mysql.query(
+                'select tname  from teacher inner join teaches on teacher.teacherid = teaches.teacherid and classid = (?)',
+                [[classid]]
+            );
+            const desc = 'Teacher Name:' + results[0].tname;
+            //console.log(desc);
+
+            const [
+                results2,
+            ] = await mysql.query(
+                'select emailid as email from student inner join attends on student.usn = attends.usn and classid = (?)',
+                [[classid]]
+            );
+            //console.log(results2);
+            const mails = JSON.stringify(results2);
+            const emails = JSON.parse(mails);
+            console.log(emails[0]);
+            await generateEvent(emails, eid, summary, desc, start, end, freq, count);
+
+            const split = start.split('T');
+            const split2 = end.split('T');
+            const [
+                results3,
+            ] = await mysql.query(
+                'INSERT INTO events (eventid,fromtime,totime,ondate,classid,sectionid,description) values (?)',
+                [[eid, split[1], split2[1], split[0], classid, sectionid, summary]]
+            );
+            res.json({ msg: 'Event added' });
         } catch (e) {
             res.status(500).json({ msg: 'internal error', e });
+            //console.log(e);
         }
     }
 );
