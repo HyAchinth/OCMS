@@ -355,7 +355,7 @@ router.post('/admin/usestt', auth('admin'), async (req, res) => {
 //add event from admin
 router.post(
     '/admin/event',
-    /*auth('admin'),*/ async (req, res) => {
+    auth('admin'), async (req, res) => {
         const { sectionid, classid, summary, start, end, freq, count } = req.body;
         try {
             const eid = await generate('1234567890abcdef', 10);

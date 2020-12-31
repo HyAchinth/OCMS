@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 
         const eventString = JSON.stringify(results);
         const events = JSON.parse(eventString);
-        res.json({ ok: true, sections: events });
+        res.json({ ok: true, events });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
 
         const eventString = JSON.stringify(results);
         const events = JSON.parse(eventString);
-        res.json({ ok: true, sections: events });
+        res.json({ ok: true, events });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -37,7 +37,7 @@ router.get('/timetable/:id', async (req, res) => {
 
         const eventString = JSON.stringify(results);
         const events = JSON.parse(eventString);
-        res.json({ ok: true, sections: events });
+        res.json({ ok: true, events });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -56,7 +56,7 @@ router.get('/teacher/:id', async (req, res) => {
 
         const eventString = JSON.stringify(results);
         const events = JSON.parse(eventString);
-        res.json({ ok: true, sections: events });
+        res.json({ ok: true, events });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -70,7 +70,7 @@ router.get('/subject/:id', async (req, res) => {
 
         const eventString = JSON.stringify(results);
         const events = JSON.parse(eventString);
-        res.json({ ok: true, sections: events });
+        res.json({ ok: true, events });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
