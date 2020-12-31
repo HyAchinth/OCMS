@@ -66,11 +66,10 @@ CREATE TABLE events(
     eventid VARCHAR(255) PRIMARY KEY,
     fromtime TIME,
     totime TIME,
-    ondate DATE,
-    link VARCHAR(255),
-    feedback VARCHAR(255),
+    ondate DATE,    
     classid VARCHAR(255),
     sectionid VARCHAR(255),
+    description VARCHAR(255),
     FOREIGN KEY(classid) REFERENCES classroom(classid) ON DELETE CASCADE,
     FOREIGN KEY(sectionid) REFERENCES timetable(sectionid) ON DELETE CASCADE
 );
