@@ -33,8 +33,12 @@ const CRED_PATH = path.join(__dirname, 'credentials.json');
 
 // Load client secrets from a local file.
 /**
+ * @typedef {{email:string}} emailobj
+ */
+
+/**
  * wrapper function
- * @param {{email:string}[]} mails
+ * @param {emailobj[]} mails
  * @param {string} eid
  * @param {string} summary
  * @param {string} desc
@@ -68,7 +72,7 @@ async function authorize(credentials) {
     const { client_secret, client_id, redirect_uris } = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
     /**
-     * @type {string} token
+     * @type {string}
      */
     let token;
     try {
