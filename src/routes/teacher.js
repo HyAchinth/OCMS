@@ -227,6 +227,7 @@ async function uploader(id, file) {
             });
     });
 }
+
 //get material
 
 router.get(
@@ -386,5 +387,29 @@ router.get(
         }
     }
 );
+
+// get teachers not assigned to class
+
+router.get('/notassigned/:classid', async (req, res) => {
+    try {
+        const data = req.params;
+
+        const [
+            results,
+        ] = await mysql.query('SELECT * from teacher where teacherid NOT IN (select teacherid from teaches where classid = (?))', [
+            data.classid,
+        ]);
+        if (results.length === 0) {
+            res.json({ ok: true, teachers: [] });
+        } else {
+            const teacherString = JSON.stringify(results);
+            const teachers = JSON.parse(teacherString);
+            res.json({ ok: true, teachers });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
 
 module.exports = router;

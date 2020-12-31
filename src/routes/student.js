@@ -309,10 +309,34 @@ router.get('/subjects/:usn', async (req, res) => {
             results,
             fields,
         ] = await mysql.query(
-            'select classname from attends inner join classroom  on attends.usn = ? and attends.classid = classroom.classid',
+            'select classroom.classid,classname from attends inner join classroom  on attends.usn = ? and attends.classid = classroom.classid',
             [req.params.usn]
         );
         res.json({ ok: true, results });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+// get students not assigned to class
+
+router.get('/notassigned/:classid', async (req, res) => {
+    try {
+        const data = req.params;
+
+        const [
+            results,
+        ] = await mysql.query('SELECT * from student where usn NOT IN (select usn from attends where classid = (?))', [
+            data.classid,
+        ]);
+        if (results.length === 0) {
+            res.json({ ok: true, students: [] });
+        } else {
+            const studentString = JSON.stringify(results);
+            const students = JSON.parse(studentString);
+            res.json({ ok: true, students });
+        }
     } catch (error) {
         console.log(error);
         res.status(500).send(error);

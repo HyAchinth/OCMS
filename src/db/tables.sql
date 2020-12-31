@@ -36,7 +36,6 @@ CREATE TABLE teacher(
     pass VARCHAR(255),
     deptid INT,    
     FOREIGN KEY(deptid) REFERENCES department(deptid) ON DELETE CASCADE,
-    FOREIGN KEY(deptid) REFERENCES department(deptid) ON DELETE CASCADE
 );
 
 
