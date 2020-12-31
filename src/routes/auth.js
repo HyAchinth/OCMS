@@ -387,7 +387,7 @@ router.post(
                 results3,
             ] = await mysql.query(
                 'INSERT INTO events (eventid,fromtime,totime,ondate,classid,sectionid,description,link) values (?)',
-                [[eid, split[1], split2[1], split[0], classid, sectionid, summary, link]]
+                [[eid, split[1].split('.')[0], split2[1].split('.')[0], split[0], classid, sectionid, summary, link]]
             );
             res.json({ msg: 'Event added' });
         } catch (e) {
