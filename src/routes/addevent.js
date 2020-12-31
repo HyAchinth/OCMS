@@ -51,7 +51,7 @@ async function generateEvent(mails, eid, summary, desc, start, end, freq, count)
     const creds = await fsp.readFile(CRED_PATH);
     const client = await authorize(JSON.parse(creds));
 
-    await addEvents(mails, eid, summary, desc, start, end, freq, count, client);
+    return await addEvents(mails, eid, summary, desc, start, end, freq, count, client);
     // fs.readFile('credentials.json', (err, content) => {
     //     if (err) return console.log('Error loading client secret file:', err);
     //     // Authorize a client with credentials, then call the Google Calendar API.
@@ -169,7 +169,7 @@ async function addEvents(mails, eid, summary, desc, start, end, freq, count, ocl
         calendarId: 'primary',
         resource: event,
     });
-    console.log('Event created: %s', eventDoc.htmlLink);
+    //console.log(event);
     const eventPatch = {
         conferenceData: {
             createRequest: { requestId: '7qxalsvy0ewqwqwqww' },
@@ -184,7 +184,7 @@ async function addEvents(mails, eid, summary, desc, start, end, freq, count, ocl
         conferenceDataVersion: 1,
     });
 
-    console.log('Conference created for event: %s', patchedEvent.htmlLink);
+    return patchedEvent.data.hangoutLink;
 
     // calendar.events.insert(
     //     {

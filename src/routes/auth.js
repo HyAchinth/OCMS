@@ -378,16 +378,16 @@ router.post(
             //console.log(results2);
             const mails = JSON.stringify(results2);
             const emails = JSON.parse(mails);
-            console.log(emails[0]);
-            await generateEvent(emails, eid, summary, desc, start, end, freq, count);
 
+            const link = await generateEvent(emails, eid, summary, desc, start, end, freq, count);
+            ///console.log(link);
             const split = start.split('T');
             const split2 = end.split('T');
             const [
                 results3,
             ] = await mysql.query(
-                'INSERT INTO events (eventid,fromtime,totime,ondate,classid,sectionid,description) values (?)',
-                [[eid, split[1], split2[1], split[0], classid, sectionid, summary]]
+                'INSERT INTO events (eventid,fromtime,totime,ondate,classid,sectionid,description,link) values (?)',
+                [[eid, split[1], split2[1], split[0], classid, sectionid, summary, link]]
             );
             res.json({ msg: 'Event added' });
         } catch (e) {
