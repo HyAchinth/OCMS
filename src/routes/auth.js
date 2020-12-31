@@ -4,29 +4,24 @@ const router = express.Router();
 const { mysql } = require('../db/mysql');
 const auth = require('../middleware/auth');
 const generateAuthToken = require('../token/generateAuthToken');
+const generateEvent = require('./event');
 
 //Crete new department/admin
 
 router.post('/department', async (req, res) => {
     try {
         const data = req.body;
-        const [
-            results,
-        ] = await mysql.query(
-            'SELECT adminuser AS adminuser FROM department WHERE adminuser = ?',
-            [data.adminuser]
-        );
+        const [results] = await mysql.query('SELECT adminuser AS adminuser FROM department WHERE adminuser = ?', [
+            data.adminuser,
+        ]);
         if (results.length !== 0 && results[0].adminuser === data.adminuser) {
             return res.json({ msg: 'adminuser already registered!' });
         }
         const salt = await bcrypt.genSalt(10);
         data.adminpass = await bcrypt.hash(data.adminpass, salt);
-        const [
-            results2,
-        ] = await mysql.query(
-            'INSERT INTO department (deptname,adminuser,adminpass) values (?)',
-            [[data.deptname, data.adminuser, data.adminpass]]
-        );
+        const [results2] = await mysql.query('INSERT INTO department (deptname,adminuser,adminpass) values (?)', [
+            [data.deptname, data.adminuser, data.adminpass],
+        ]);
         const user = { email: data.adminuser, userType: 'admin' };
         generateAuthToken(user, token => {
             res.json({ token });
@@ -42,12 +37,7 @@ router.post('/department', async (req, res) => {
 router.get('/department/:adminuser', auth('admin'), async (req, res) => {
     try {
         data = req.params;
-        const [
-            results,
-            fields,
-        ] = await mysql.query('SELECT * FROM department WHERE adminuser = ?', [
-            data.adminuser,
-        ]);
+        const [results, fields] = await mysql.query('SELECT * FROM department WHERE adminuser = ?', [data.adminuser]);
         const userString = JSON.stringify(results[0]);
         const user = JSON.parse(userString);
         delete user.adminpass;
@@ -63,9 +53,7 @@ router.get('/department/:adminuser', auth('admin'), async (req, res) => {
 router.put('/department', async (req, res) => {
     try {
         const data = req.body;
-        const [
-            results,
-        ] = await mysql.query(
+        const [results] = await mysql.query(
             'UPDATE department SET deptname = (?), adminuser = (?) where deptid = (?)',
             [data.deptname, data.adminuser, data.deptid]
         );
@@ -82,25 +70,16 @@ Admin Login
 
 router.post('/admin/login', async (req, res) => {
     try {
-        const [
-            results,
-            fields,
-        ] = await mysql.query(
-            'SELECT adminuser,adminpass FROM department WHERE adminuser = ?',
-            [req.body.adminuser]
-        );
+        const [results, fields] = await mysql.query('SELECT adminuser,adminpass FROM department WHERE adminuser = ?', [
+            req.body.adminuser,
+        ]);
         if (results.length == 0) {
-            return res
-                .status(400)
-                .json({ ok: false, auth: false, msg: 'Authentication Error!' });
+            return res.status(400).json({ ok: false, auth: false, msg: 'Authentication Error!' });
         }
         const userString = JSON.stringify(results[0]);
         const user_data = JSON.parse(userString);
         const user = { email: user_data.adminuser, userType: 'admin' };
-        const isMatch = await bcrypt.compare(
-            req.body.adminpass,
-            user_data.adminpass
-        );
+        const isMatch = await bcrypt.compare(req.body.adminpass, user_data.adminpass);
         if (isMatch) {
             generateAuthToken(user, token => {
                 res.json({ ok: true, auth: true, token });
@@ -125,11 +104,7 @@ router.post('/admin/student', auth('admin'), async (req, res) => {
         const data = req.body;
         data.usn = String(data.usn).toUpperCase();
         console.log(data);
-        const [
-            results,
-        ] = await mysql.query('SELECT usn AS usn FROM student WHERE usn = ?', [
-            data.usn,
-        ]);
+        const [results] = await mysql.query('SELECT usn AS usn FROM student WHERE usn = ?', [data.usn]);
         if (results.length !== 0 && results[0].usn === data.usn) {
             return res.json({ msg: 'student already registered!' });
         }
@@ -170,15 +145,7 @@ router.put('/admin/student', auth('admin'), async (req, res) => {
             results2,
         ] = await mysql.query(
             'UPDATE student SET stname = (?),emailid = (?),yearno = (?),semester = (?),deptid = (?),sectionid=(?) WHERE usn = (?)',
-            [
-                data.stname,
-                data.emailid,
-                data.yearno,
-                data.semester,
-                data.deptid,
-                data.sectionid,
-                data.usn,
-            ]
+            [data.stname, data.emailid, data.yearno, data.semester, data.deptid, data.sectionid, data.usn]
         );
 
         res.json({ ok: true, msg: 'student updated' });
@@ -194,11 +161,7 @@ router.delete('/admin/student/:usn', auth('admin'), async (req, res) => {
     try {
         const data = req.params;
 
-        const [
-            results2,
-        ] = await mysql.query('DELETE from student where usn = (?)', [
-            data.usn,
-        ]);
+        const [results2] = await mysql.query('DELETE from student where usn = (?)', [data.usn]);
 
         res.json({ ok: true, msg: 'student deleted' });
     } catch (error) {
@@ -212,23 +175,17 @@ router.delete('/admin/student/:usn', auth('admin'), async (req, res) => {
 router.post('/admin/teacher', auth('admin'), async (req, res) => {
     try {
         const data = req.body;
-        const [
-            results,
-        ] = await mysql.query(
-            'SELECT teacherid AS teacherid FROM teacher WHERE teacherid = ?',
-            [data.teacherid]
-        );
+        const [results] = await mysql.query('SELECT teacherid AS teacherid FROM teacher WHERE teacherid = ?', [
+            data.teacherid,
+        ]);
         if (results.length !== 0 && results[0].teacherid === data.teacherid) {
             return res.json({ msg: 'teacher already registered!' });
         }
         const salt = await bcrypt.genSalt(10);
         data.pass = await bcrypt.hash(data.pass, salt);
-        const [
-            results2,
-        ] = await mysql.query(
-            'INSERT INTO teacher (teacherid,tname,emailid,pass,deptid) VALUES (?)',
-            [[data.teacherid, data.tname, data.emailid, data.pass, data.deptid]]
-        );
+        const [results2] = await mysql.query('INSERT INTO teacher (teacherid,tname,emailid,pass,deptid) VALUES (?)', [
+            [data.teacherid, data.tname, data.emailid, data.pass, data.deptid],
+        ]);
 
         res.json({ msg: 'teacher added' });
     } catch (error) {
@@ -245,10 +202,12 @@ router.put('/admin/teacher', auth('admin'), async (req, res) => {
 
         const [
             results2,
-        ] = await mysql.query(
-            'UPDATE teacher SET tname = (?),emailid = (?),deptid = (?) WHERE  teacherid = (?)',
-            [data.tname, data.emailid, data.deptid, data.teacherid]
-        );
+        ] = await mysql.query('UPDATE teacher SET tname = (?),emailid = (?),deptid = (?) WHERE  teacherid = (?)', [
+            data.tname,
+            data.emailid,
+            data.deptid,
+            data.teacherid,
+        ]);
 
         res.json({ msg: 'teacher updated' });
     } catch (error) {
@@ -263,11 +222,7 @@ router.delete('/admin/teacher/:teacherid', auth('admin'), async (req, res) => {
     try {
         const data = req.params;
 
-        const [
-            results2,
-        ] = await mysql.query('DELETE from teacher where teacherid = (?)', [
-            data.teacherid,
-        ]);
+        const [results2] = await mysql.query('DELETE from teacher where teacherid = (?)', [data.teacherid]);
 
         res.json({ ok: true, msg: 'teacher deleted' });
     } catch (error) {
@@ -280,13 +235,9 @@ router.delete('/admin/teacher/:teacherid', auth('admin'), async (req, res) => {
 
 router.post('/admin/timetable', auth('admin'), async (req, res) => {
     const data = req.body;
-    const [
-        results,
-        fields,
-    ] = await mysql.query(
-        'INSERT INTO timetable (sectionid,yearno,semester,deptid) values (?)',
-        [[data.sectionid, data.yearno, data.semester, data.deptid]]
-    );
+    const [results, fields] = await mysql.query('INSERT INTO timetable (sectionid,yearno,semester,deptid) values (?)', [
+        [data.sectionid, data.yearno, data.semester, data.deptid],
+    ]);
     res.json({ msg: 'timetable added' });
 });
 
@@ -300,13 +251,7 @@ router.put('/admin/timetable', auth('admin'), async (req, res) => {
             results2,
         ] = await mysql.query(
             'UPDATE timetable SET sectionid = (?),yearno = (?), semester = (?),deptid = (?) where sectionid=(?)',
-            [
-                data.sectionid,
-                data.yearno,
-                data.semester,
-                data.deptid,
-                data.sectionid,
-            ]
+            [data.sectionid, data.yearno, data.semester, data.deptid, data.sectionid]
         );
 
         res.json({ msg: 'timetable updated' });
@@ -318,39 +263,26 @@ router.put('/admin/timetable', auth('admin'), async (req, res) => {
 
 //delete student
 
-router.delete(
-    '/admin/timetable/:sectionid',
-    auth('admin'),
-    async (req, res) => {
-        try {
-            const data = req.params;
+router.delete('/admin/timetable/:sectionid', auth('admin'), async (req, res) => {
+    try {
+        const data = req.params;
 
-            const [
-                results2,
-            ] = await mysql.query(
-                'DELETE from timetable where sectionid = (?)',
-                [data.sectionid]
-            );
+        const [results2] = await mysql.query('DELETE from timetable where sectionid = (?)', [data.sectionid]);
 
-            res.json({ ok: true, msg: 'timetable deleted' });
-        } catch (error) {
-            console.log(error);
-            res.status(500).send(error);
-        }
+        res.json({ ok: true, msg: 'timetable deleted' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
     }
-);
+});
 
 //create classroom
 
 router.post('/admin/classroom', auth('admin'), async (req, res) => {
     const data = req.body;
-    const [
-        results,
-        fields,
-    ] = await mysql.query(
-        'INSERT INTO classroom (classid,classname) values (?)',
-        [[data.classid, data.classname]]
-    );
+    const [results, fields] = await mysql.query('INSERT INTO classroom (classid,classname) values (?)', [
+        [data.classid, data.classname],
+    ]);
     res.json({ msg: 'classroom added' });
 });
 
@@ -358,13 +290,9 @@ router.post('/admin/classroom', auth('admin'), async (req, res) => {
 
 router.post('/admin/teaches', auth('admin'), async (req, res) => {
     const data = req.body;
-    const [
-        results,
-        fields,
-    ] = await mysql.query(
-        'INSERT INTO teaches (teacherid,classid) values (?)',
-        [[data.teacherid, data.classid]]
-    );
+    const [results, fields] = await mysql.query('INSERT INTO teaches (teacherid,classid) values (?)', [
+        [data.teacherid, data.classid],
+    ]);
     res.json({ msg: 'teaches relation added' });
 });
 
@@ -372,10 +300,7 @@ router.post('/admin/teaches', auth('admin'), async (req, res) => {
 
 router.post('/admin/attends', auth('admin'), async (req, res) => {
     const data = req.body;
-    const [
-        results,
-        fields,
-    ] = await mysql.query('INSERT INTO attends (usn,classid) values (?)', [
+    const [results, fields] = await mysql.query('INSERT INTO attends (usn,classid) values (?)', [
         [data.usn, data.classid],
     ]);
     res.json({ msg: 'attends relation added' });
@@ -410,14 +335,29 @@ router.post('/admin/events', auth('admin'), async (req, res) => {
 
 router.post('/admin/usestt', auth('admin'), async (req, res) => {
     const data = req.body;
-    const [
-        results,
-        fields,
-    ] = await mysql.query(
-        'INSERT INTO usestt (teacherid,sectionid) values (?)',
-        [[data.teacherid, data.sectionid]]
-    );
+    const [results, fields] = await mysql.query('INSERT INTO usestt (teacherid,sectionid) values (?)', [
+        [data.teacherid, data.sectionid],
+    ]);
     res.json({ msg: 'usestt relation added' });
 });
+
+//add event from admin
+router.post(
+    '/admin/event',
+    /*auth('admin'),*/ async (req, res) => {
+        const { mails, eid, summary, desc, start, end, freq, count } = req.body;
+        try {
+            await generateEvent(mails, eid, summary, desc, start, end, freq, count);
+            /*const [
+            results,
+        ] = await mysql.query('INSERT INTO events (eventid,fromtime,totime,ondate,link,classid,sectionid) values (?)', [
+            [data.teacherid, data.sectionid],
+        ]);
+        res.json({ msg: 'usestt relation added' });*/
+        } catch (e) {
+            res.status(500).json({ msg: 'internal error', e });
+        }
+    }
+);
 
 module.exports = router;

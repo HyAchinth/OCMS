@@ -13,6 +13,8 @@ app.use('/teacher', require('./routes/teacher'));
 app.use('/classroom', require('./routes/classroom'));
 app.use('/auth', require('./routes/auth'));
 
+app.get('/test', (req, res) => res.json({ ok: true }));
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });

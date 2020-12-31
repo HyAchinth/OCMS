@@ -30,6 +30,7 @@
         "tabWidth": 4,
         "arrowParens": "avoid",
         "semi": true,
-        "singleQuote": true
+        "singleQuote": true,
+        "printWidth": 120
     }
 }

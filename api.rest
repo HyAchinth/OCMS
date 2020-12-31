@@ -196,3 +196,10 @@ POST http://localhost:5000/teacher/subjects/
 Content-Type: application/json
 
 {"teacherid":"1"}
+
+### teacher adds event
+
+POST http://localhost:5000/auth/admin/event/
+Content-Type: application/json
+
+{"mails":[{"email":"achinthyas.cs18@rvce.edu.in"},{"email":"ambukarthik.cs18@rvce.edu.in"},{"email":"aravinda.cs18@rvce.edu.in"}],"eid":"ocms11","summary":"DMS3 class","desc":"Teacher: HKK","start":"2021-3-30T01:00:00","end":"2021-3-30T02:00:00","freq":"DAILY","count":"1"}
