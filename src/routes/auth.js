@@ -257,7 +257,7 @@ router.put('/admin/teacher', auth('admin'), async (req, res) => {
     }
 });
 
-//delete student
+//delete teacher
 
 router.delete('/admin/teacher/:teacherid', auth('admin'), async (req, res) => {
     try {
@@ -316,7 +316,7 @@ router.put('/admin/timetable', auth('admin'), async (req, res) => {
     }
 });
 
-//delete student
+//delete section
 
 router.delete(
     '/admin/timetable/:sectionid',
@@ -353,6 +353,30 @@ router.post('/admin/classroom', auth('admin'), async (req, res) => {
     );
     res.json({ msg: 'classroom added' });
 });
+
+//delete classroom
+
+router.delete(
+    '/admin/classroom/:classid',
+    auth('admin'),
+    async (req, res) => {
+        try {
+            const data = req.params;
+
+            const [
+                results2,
+            ] = await mysql.query(
+                'DELETE from classroom where classid = (?)',
+                [data.classid]
+            );
+
+            res.json({ ok: true, msg: 'classroom deleted' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error);
+        }
+    }
+);
 
 //create teaches ( teacherid - classid)
 

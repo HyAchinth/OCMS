@@ -29,30 +29,12 @@ CREATE TABLE student(
     FOREIGN KEY(sectionid) REFERENCES timetable(sectionid) ON DELETE CASCADE     
 );
 
-CREATE TABLE follows(
-    usn VARCHAR(255),
-    sectionid VARCHAR(255),
-    PRIMARY KEY(usn,sectionid),
-    FOREIGN KEY(usn) REFERENCES student(usn) ON DELETE CASCADE,
-    FOREIGN KEY(sectionid) REFERENCES timetable(sectionid) ON DELETE CASCADE
-);
-
 CREATE TABLE teacher(
     teacherid VARCHAR(255) PRIMARY KEY,
     tname VARCHAR(255),
     emailid VARCHAR(255),
     pass VARCHAR(255),    
     FOREIGN KEY(deptid) REFERENCES department(deptid) ON DELETE CASCADE,
-);
-
-
-
-CREATE TABLE facultyof(
-    teacherid VARCHAR(255),
-    deptid INT,
-    PRIMARY KEY(teacherid,deptid),
-    FOREIGN KEY(teacherid) REFERENCES teacher(teacherid) ON DELETE CASCADE,
-    FOREIGN KEY(deptid) REFERENCES department(deptid) ON DELETE CASCADE
 );
 
 
