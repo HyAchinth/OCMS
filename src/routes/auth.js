@@ -288,27 +288,18 @@ router.post('/admin/classroom', auth('admin'), async (req, res) => {
 
 //delete classroom
 
-router.delete(
-    '/admin/classroom/:classid',
-    auth('admin'),
-    async (req, res) => {
-        try {
-            const data = req.params;
+router.delete('/admin/classroom/:classid', auth('admin'), async (req, res) => {
+    try {
+        const data = req.params;
 
-            const [
-                results2,
-            ] = await mysql.query(
-                'DELETE from classroom where classid = (?)',
-                [data.classid]
-            );
+        const [results2] = await mysql.query('DELETE from classroom where classid = (?)', [data.classid]);
 
-            res.json({ ok: true, msg: 'classroom deleted' });
-        } catch (error) {
-            console.log(error);
-            res.status(500).send(error);
-        }
+        res.json({ ok: true, msg: 'classroom deleted' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
     }
-);
+});
 
 //create teaches ( teacherid - classid)
 
@@ -376,8 +367,8 @@ router.post(
             results,
         ] = await mysql.query('INSERT INTO events (eventid,fromtime,totime,ondate,link,classid,sectionid) values (?)', [
             [data.teacherid, data.sectionid],
-        ]);
-        res.json({ msg: 'usestt relation added' });*/
+        ]);*/
+            res.json({ msg: 'event relation added' });
         } catch (e) {
             res.status(500).json({ msg: 'internal error', e });
         }
