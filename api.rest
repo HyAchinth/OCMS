@@ -202,7 +202,7 @@ Content-Type: application/json
 POST http://localhost:5000/auth/admin/event/
 Content-Type: application/json
 
-{"sectionid":"3A","classid":"1","summary":"chemistry","start":"2021-6-15T01:00:00","end":"2021-6-15T02:00:00","freq":"WEEKLY","count":"2"}
+{"sectionid":"1A","classid":"1","summary":"FINAL EXAM4","start":"2021-6-2T01:00:00","end":"2021-6-2T02:00:00","freq":"WEEKLY","count":"1"}
 
 ### teacher adds events
 
@@ -210,3 +210,20 @@ POST http://localhost:5000/auth/admin/events/
 Content-Type: application/json
 
 {"classid":"1","dt":"2021-4-1T01:00:00"}
+
+### get all events
+POST http://localhost:5000/student/feedback
+Content-Type: application/json
+
+{"usn":"1rv18cs007","eventid":"1","fback":"The Teacher Volume could be a bit louder"}
+
+
+###get event
+GET https://www.googleapis.com/calendar/v3/calendars/ocms3435@gmail.com/events/56f86d6e43 
+
+###
+GET https://www.googleapis.com/calendar/v3/calendars/primary/events/56f86d6e43?key=AIzaSyDeHMhHPwBH_vgo5Zs8Hh4KFr--Vlm-lt4 
+
+Authorization: Bearer ya29.a0AfH6SMBG_eqv58s1fsvc6tMBoJEExCdkwCS9uGnGES1LsDCxaI-BJcBXuK8G55aE-BIibb4bjNdJFlLUJw4eV3Zu65WXJ2YLDwBRZROv7WfBNuSsyC6zdbmO5TA4KOVukJTtleA-0Bo4uNqUKn_scVZSlo9rmvnAWCohy0uaKt0
+Accept: application/jso
+

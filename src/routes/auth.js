@@ -334,23 +334,23 @@ router.post('/admin/usestt', auth('admin'), async (req, res) => {
 
 //create TESTING ENV
 
-router.post(
-    '/admin/events',
-    /*auth('admin'),*/ async (req, res) => {
-        const data = req.body;
+// router.post(
+//     '/admin/events',
+//     /*auth('admin'),*/ async (req, res) => {
+//         const data = req.body;
 
-        const [
-            results,
-        ] = await mysql.query(
-            'select emailid as email from student inner join attends on student.usn = attends.usn and classid = (?)',
-            [[data.classid]]
-        );
-        const T = JSON.stringify(results);
-        desc = 'Teacher Name:' + results[0].tname;
-        console.log(data.dt.getTime(), data.dt.getDate());
-        res.json({ msg: 'event added' });
-    }
-);
+//         const [
+//             results,
+//         ] = await mysql.query(
+//             'select emailid as email from student inner join attends on student.usn = attends.usn and classid = (?)',
+//             [[data.classid]]
+//         );
+//         const T = JSON.stringify(results);
+//         desc = 'Teacher Name:' + results[0].tname;
+//         console.log(data.dt.getTime(), data.dt.getDate());
+//         res.json({ msg: 'event added' });
+//     }
+// );
 
 //add event from admin
 router.post(
@@ -378,16 +378,16 @@ router.post(
             //console.log(results2);
             const mails = JSON.stringify(results2);
             const emails = JSON.parse(mails);
-            console.log(emails[0]);
-            await generateEvent(emails, eid, summary, desc, start, end, freq, count);
 
+            const link = await generateEvent(emails, eid, summary, desc, start, end, freq, count);
+            ///console.log(link);
             const split = start.split('T');
             const split2 = end.split('T');
             const [
                 results3,
             ] = await mysql.query(
-                'INSERT INTO events (eventid,fromtime,totime,ondate,classid,sectionid,description) values (?)',
-                [[eid, split[1], split2[1], split[0], classid, sectionid, summary]]
+                'INSERT INTO events (eventid,fromtime,totime,ondate,classid,sectionid,description,link) values (?)',
+                [[eid, split[1].split('.')[0], split2[1].split('.')[0], split[0], classid, sectionid, summary, link]]
             );
             res.json({ msg: 'Event added' });
         } catch (e) {
