@@ -334,23 +334,23 @@ router.post('/admin/usestt', auth('admin'), async (req, res) => {
 
 //create TESTING ENV
 
-router.post(
-    '/admin/events',
-    /*auth('admin'),*/ async (req, res) => {
-        const data = req.body;
+// router.post(
+//     '/admin/events',
+//     /*auth('admin'),*/ async (req, res) => {
+//         const data = req.body;
 
-        const [
-            results,
-        ] = await mysql.query(
-            'select emailid as email from student inner join attends on student.usn = attends.usn and classid = (?)',
-            [[data.classid]]
-        );
-        const T = JSON.stringify(results);
-        desc = 'Teacher Name:' + results[0].tname;
-        console.log(data.dt.getTime(), data.dt.getDate());
-        res.json({ msg: 'event added' });
-    }
-);
+//         const [
+//             results,
+//         ] = await mysql.query(
+//             'select emailid as email from student inner join attends on student.usn = attends.usn and classid = (?)',
+//             [[data.classid]]
+//         );
+//         const T = JSON.stringify(results);
+//         desc = 'Teacher Name:' + results[0].tname;
+//         console.log(data.dt.getTime(), data.dt.getDate());
+//         res.json({ msg: 'event added' });
+//     }
+// );
 
 //add event from admin
 router.post(

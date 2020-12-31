@@ -96,3 +96,13 @@ CREATE TABLE announcements(
     dtime DATETIME,
     FOREIGN KEY(classid) REFERENCES classroom(classid) ON DELETE CASCADE 
 );
+
+CREATE TABLE feedback(
+    fid integer not null auto_increment PRIMARY KEY,
+    usn VARCHAR(255),
+    eventid VARCHAR(255),
+    fback TEXT,
+    FOREIGN KEY(usn) REFERENCES student(usn) ON DELETE CASCADE 
+    FOREIGN KEY(eventid) REFERENCES events(eventid) ON DELETE CASCADE 
+
+);

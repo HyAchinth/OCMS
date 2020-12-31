@@ -12,17 +12,11 @@ const { Readable } = require('stream');
 
 router.post('/login', async (req, res) => {
     try {
-        const [
-            results,
-            fields,
-        ] = await mysql.query(
-            'SELECT emailid,studentpass FROM student WHERE emailid = ?',
-            [req.body.emailid]
-        );
+        const [results, fields] = await mysql.query('SELECT emailid,studentpass FROM student WHERE emailid = ?', [
+            req.body.emailid,
+        ]);
         if (results.length == 0) {
-            return res
-                .status(400)
-                .json({ ok: false, auth: false, msg: 'Authentication Error!' });
+            return res.status(400).json({ ok: false, auth: false, msg: 'Authentication Error!' });
         }
         const userString = JSON.stringify(results[0]);
         const user_data = JSON.parse(userString);
@@ -55,12 +49,7 @@ router.put('/login', auth('student'), async (req, res) => {
         data.newpassword = await bcrypt.hash(data.newpassword, salt);
 
         let passwordHash = '';
-        const [
-            results,
-        ] = await mysql.query(
-            'SELECT studentpass FROM student WHERE emailid = (?)',
-            [data.emailid]
-        );
+        const [results] = await mysql.query('SELECT studentpass FROM student WHERE emailid = (?)', [data.emailid]);
 
         if (results.length === 0) {
             res.status(500).send({
@@ -76,12 +65,10 @@ router.put('/login', auth('student'), async (req, res) => {
         const isMatch = await bcrypt.compare(data.oldpassword, passwordHash);
 
         if (isMatch) {
-            const [
-                results2,
-            ] = await mysql.query(
-                'UPDATE student SET studentpass = (?) WHERE emailid = (?)',
-                [data.newpassword, data.emailid]
-            );
+            const [results2] = await mysql.query('UPDATE student SET studentpass = (?) WHERE emailid = (?)', [
+                data.newpassword,
+                data.emailid,
+            ]);
             res.json({ ok: true, msg: 'password updated' });
         } else {
             res.status(401).send({ ok: false, msg: 'Wrong password' });
@@ -96,9 +83,7 @@ router.put('/login', auth('student'), async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const [results] = await mysql.query(
-            'SELECT usn, stname, emailid, yearno, semester, sectionid from student'
-        );
+        const [results] = await mysql.query('SELECT usn, stname, emailid, yearno, semester, sectionid from student');
 
         const studentString = JSON.stringify(results);
         const students = JSON.parse(studentString);
@@ -261,5 +246,18 @@ router.get('/notassigned/:classid', async (req, res) => {
         res.status(500).send(error);
     }
 });
+
+//add feedback
+
+router.post(
+    '/feedback',
+    /*auth('student'),*/ async (req, res) => {
+        const data = req.body;
+        const [results] = await mysql.query('INSERT INTO feedback (usn,eventid,fback) values (?)', [
+            [data.usn, data.eventid, data.fback],
+        ]);
+        res.json({ msg: 'feedback added' });
+    }
+);
 
 module.exports = router;

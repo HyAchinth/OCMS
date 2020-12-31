@@ -210,3 +210,13 @@ POST http://localhost:5000/auth/admin/events/
 Content-Type: application/json
 
 {"classid":"1","dt":"2021-4-1T01:00:00"}
+
+### get all events
+POST http://localhost:5000/student/feedback
+Content-Type: application/json
+
+{"usn":"1rv18cs007","eventid":"1","fback":"The Teacher Volume could be a bit louder"}
+
+
+
+
