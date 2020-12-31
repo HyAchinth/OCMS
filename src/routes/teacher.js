@@ -166,7 +166,7 @@ router.get('/email/:emailid', async (req, res) => {
             results,
         ] = await mysql.query(
             'SELECT teacherid,tname,emailid,deptid from teacher where emailid = (?)',
-            [data.teacherid]
+            [data.emailid]
         );
 
         if (results.length === 0) {
@@ -185,17 +185,17 @@ router.get('/email/:emailid', async (req, res) => {
 //view the enrolled subjects
 
 router.get(
-    '/subjects/:emailid',
+    '/subjects/:teacherid',
     /*auth('teacher'),*/ async (req, res) => {
         try {
             const [
                 results,
                 fields,
             ] = await mysql.query(
-                'select classname from teaches inner join classroom  on teaches.teacherid = ? and teaches.classid = classroom.classid',
+                'select classroom.classid,classname from teaches inner join classroom  on teaches.teacherid = ? and teaches.classid = classroom.classid',
                 [req.params.teacherid]
             );
-            res.json(results);
+            res.json({results});
         } catch (error) {
             console.log(error);
             res.status(500).send(error);

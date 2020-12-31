@@ -6,7 +6,7 @@ const auth = require('../middleware/auth');
 //add announcements
 
 router.post(
-    '/announcements',
+    '/',
     auth('teacher'), async (req, res) => {
         try {
             const { classid, announcement, dtime } = req.body;
@@ -27,7 +27,7 @@ router.post(
 //delete announcements
 
 router.delete(
-    '/announcements/:id',
+    '/:id',
     auth('teacher'), async (req, res) => {
         const aid = req.params.id;
         console.log(aid);

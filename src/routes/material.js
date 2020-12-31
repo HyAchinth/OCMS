@@ -3,6 +3,8 @@ const router = express.Router();
 const { mysql } = require('../db/mysql');
 const auth = require('../middleware/auth');
 const { getBucket } = require('../db/mongo');
+const { get } = require('./auth');
+const { Readable } = require('stream');
 
 /*upload material as teacher
 expected filename,classid,file as array
@@ -12,12 +14,12 @@ router.post(
     '/',
     auth('teacher'), async (req, res) => {
         try {
-            const { materialname, classid, file } = req.body;
+            const { materialname, classid, filetype, file } = req.body;
             const [
                 results,
             ] = await mysql.query(
-                'INSERT INTO material (materialname,classid) VALUES (?)',
-                [[materialname, classid]]
+                'INSERT INTO material (materialname,classid,filetype) VALUES (?)',
+                [[materialname, classid, filetype]]
             );
             const id = results.insertId.toString();
             const ans = await uploader(id, file);
@@ -55,7 +57,8 @@ router.get(
         const materialid = req.params.id;
         try {
             const result = await downloader(materialid);
-            res.json({ file: result});
+            const [result2] = await mysql.query('select filetype from material where materialid = (?)', [materialid])
+            res.json({ file: result, ...result2[0]});
         } catch (error) {
             console.log(error);
             res.status(500).send(error);
