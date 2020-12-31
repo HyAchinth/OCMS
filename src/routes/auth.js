@@ -4,7 +4,7 @@ const router = express.Router();
 const { mysql } = require('../db/mysql');
 const auth = require('../middleware/auth');
 const generateAuthToken = require('../token/generateAuthToken');
-const generateEvent = require('./event');
+const generateEvent = require('./addevent');
 const generate = require('nanoid/async/generate');
 
 //Crete new department/admin

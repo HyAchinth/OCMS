@@ -1,5 +1,5 @@
 //@ts-check
-const event = require('./event');
+const event = require('./addevent');
 
 const mails = [
     { email: 'achinthyas.cs18@rvce.edu.in' },

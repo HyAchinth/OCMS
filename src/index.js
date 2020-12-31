@@ -12,6 +12,7 @@ app.use('/student', require('./routes/student'));
 app.use('/teacher', require('./routes/teacher'));
 app.use('/classroom', require('./routes/classroom'));
 app.use('/material', require('./routes/material'));
+app.use('/event', require('./routes/event'));
 app.use('/announcement', require('./routes/announcement'));
 app.use('/auth', require('./routes/auth'));
 
