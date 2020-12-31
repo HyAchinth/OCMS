@@ -50,7 +50,7 @@ router.get('/teacher/:id', async (req, res) => {
         const [
             results,
         ] = await mysql.query(
-            'select eventid,fromtime,totime,ondate,events.classid,sectionid,description from teacher inner join teaches on teacher.teacherid = teaches.teacherid inner join events on teaches.classid = events.classid and teacher.teacherid = (?)',
+            'select eventid,fromtime,totime,ondate,events.classid,sectionid,description,link from teacher inner join teaches on teacher.teacherid = teaches.teacherid inner join events on teaches.classid = events.classid and teacher.teacherid = (?)',
             [req.params.id]
         );
 
