@@ -204,49 +204,10 @@ router.get('/email/:emailid', async (req, res) => {
     }
 });
 
-//Download Material
-
-router.get(
-    '/material/:id',
-    /*auth('student'),*/ async (req, res) => {
-        const materialid = req.params.id;
-        try {
-            const result = await downloader(materialid);
-            res.json({ result });
-        } catch (error) {
-            console.log(error);
-            res.status(500).send(error);
-        }
-    }
-);
-
-async function downloader(id) {
-    const bucket = await getBucket();
-    return new Promise((res, rej) => {
-        let data = Buffer.from([]);
-
-        bucket
-            .openDownloadStreamByName(id.toString())
-            .on('data', d => {
-                // data.push(d);
-                // data.
-                data = Buffer.concat([data, d]);
-            })
-            .on('error', e => {
-                // console.log(e);
-                rej(e);
-            })
-            .on('end', () => {
-                //console.log('i>Read stats', data.length, size);
-                res(data);
-            });
-    });
-}
-
 //view students list
 
 router.get(
-    '/studentlist/:id',
+    '/class/:id',
     /*auth('student'),*/ async (req, res) => {
         const [
             results,
@@ -256,48 +217,6 @@ router.get(
             [req.params.id]
         );
         res.json(results);
-    }
-);
-
-//view materials list
-
-router.get(
-    '/materiallist/:id',
-    /*auth('student'),*/ async (req, res) => {
-        try {
-            const [
-                results,
-                fields,
-            ] = await mysql.query(
-                'SELECT materialname FROM material WHERE classid=?',
-                [req.params.id]
-            );
-            res.json(results);
-        } catch (error) {
-            console.log(error);
-            res.status(500).send(error);
-        }
-    }
-);
-
-//view announcements list
-
-router.get(
-    '/announcementlist/:id',
-    /*auth('student'),*/ async (req, res) => {
-        try {
-            const [
-                results,
-                fields,
-            ] = await mysql.query(
-                'SELECT announcement,dtime FROM announcements WHERE classid=?',
-                [req.params.id]
-            );
-            res.json(results);
-        } catch (error) {
-            console.log(error);
-            res.status(500).send(error);
-        }
     }
 );
 

@@ -11,6 +11,8 @@ app.use('/section', require('./routes/section'));
 app.use('/student', require('./routes/student'));
 app.use('/teacher', require('./routes/teacher'));
 app.use('/classroom', require('./routes/classroom'));
+app.use('/material', require('./routes/material'));
+app.use('/announcement', require('./routes/announcement'));
 app.use('/auth', require('./routes/auth'));
 
 app.get('/test', (req, res) => res.json({ ok: true }));
