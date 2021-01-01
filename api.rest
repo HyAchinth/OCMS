@@ -202,7 +202,7 @@ Content-Type: application/json
 POST http://localhost:5000/auth/admin/event/
 Content-Type: application/json
 
-{"sectionid":"1A","classid":"1","summary":"FINAL EXAM4","start":"2021-6-2T01:00:00","end":"2021-6-2T02:00:00","freq":"WEEKLY","count":"1"}
+{"sectionid":"1A","classid":"1","summary":"LAB INTERNALS69","start":"2021-9-2T01:00:00","end":"2021-9-2T02:00:00","freq":"WEEKLY","count":"4"}
 
 ### teacher adds events
 

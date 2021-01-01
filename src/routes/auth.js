@@ -389,6 +389,31 @@ router.post(
                 'INSERT INTO events (eventid,fromtime,totime,ondate,classid,sectionid,description,link) values (?)',
                 [[eid, split[1].split('.')[0], split2[1].split('.')[0], split[0], classid, sectionid, summary, link]]
             );
+
+            Date.prototype.yyyymmdd = function () {
+                var mm = this.getMonth() + 1; // getMonth() is zero-based
+                var dd = this.getDate();
+
+                return [this.getFullYear(), (mm > 9 ? '' : '0') + mm, (dd > 9 ? '' : '0') + dd].join('-');
+            };
+            var c = parseInt(count, 10);
+            var d = 7;
+            if (freq == 'DAILY') d = 1;
+            var newdate = new Date(split[0]);
+            for (var i = 0; i < c - 1; i++) {
+                var days = d;
+                newdate.setDate(newdate.getDate() + days);
+                var edate = newdate.yyyymmdd();
+                console.log(split[0], edate);
+                const eid = await generate('1234567890abcdef', 10);
+                const [
+                    results3,
+                ] = await mysql.query(
+                    'INSERT INTO events (eventid,fromtime,totime,ondate,classid,sectionid,description,link) values (?)',
+                    [[eid, split[1].split('.')[0], split2[1].split('.')[0], edate, classid, sectionid, summary, link]]
+                );
+            }
+
             res.json({ msg: 'Event added' });
         } catch (e) {
             res.status(500).json({ msg: 'internal error', e });
