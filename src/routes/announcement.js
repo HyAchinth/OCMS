@@ -5,45 +5,32 @@ const auth = require('../middleware/auth');
 
 //add announcements
 
-router.post(
-    '/',
-    auth('teacher'), async (req, res) => {
-        try {
-            const { classid, announcement, dtime } = req.body;
-            const [
-                results,
-            ] = await mysql.query(
-                'INSERT INTO announcements (classid, announcement, dtime) VALUES (?)',
-                [[classid, announcement, dtime]]
-            );
-            res.json({ Response: 'Announcement added' });
-        } catch (error) {
-            console.log(error);
-            res.status(500).send(error);
-        }
+router.post('/', auth('teacher'), async (req, res) => {
+    try {
+        const { classid, announcement, dtime } = req.body;
+        const [results] = await mysql.query('INSERT INTO announcements (classid, announcement, dtime) VALUES (?)', [
+            [classid, announcement, dtime],
+        ]);
+        res.json({ Response: 'Announcement added' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
     }
-);
+});
 
 //delete announcements
 
-router.delete(
-    '/:id',
-    auth('teacher'), async (req, res) => {
-        const aid = req.params.id;
-        console.log(aid);
-        try {
-            const [
-                result,
-            ] = await mysql.query('DELETE FROM announcements where aid = (?)', [
-                [aid],
-            ]);
-            res.json({ msg: 'deleted' });
-        } catch (error) {
-            console.log(error);
-            res.status(500).send(error);
-        }
+router.delete('/:id', auth('teacher'), async (req, res) => {
+    const aid = req.params.id;
+    console.log(aid);
+    try {
+        const [result] = await mysql.query('DELETE FROM announcements where aid = (?)', [[aid]]);
+        res.json({ msg: 'deleted' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
     }
-);
+});
 
 //get one announcement by aid
 
@@ -51,14 +38,8 @@ router.get(
     '/:id',
     /*auth('teacher'),*/ async (req, res) => {
         try {
-            const [
-                results,
-                fields,
-            ] = await mysql.query(
-                'SELECT * FROM announcements WHERE aid= (?)',
-                [req.params.id]
-            );
-            res.json({results});
+            const [results, fields] = await mysql.query('SELECT * FROM announcements WHERE aid= (?)', [req.params.id]);
+            res.json({ results });
         } catch (error) {
             console.log(error);
             res.status(500).send(error);
@@ -72,13 +53,8 @@ router.get(
     '/',
     /*auth('teacher'),*/ async (req, res) => {
         try {
-            const [
-                results,
-                fields,
-            ] = await mysql.query(
-                'SELECT announcement,dtime,classid FROM announcements',
-            );
-            res.json({results});
+            const [results, fields] = await mysql.query('SELECT aid,announcement,dtime,classid FROM announcements');
+            res.json({ results });
         } catch (error) {
             console.log(error);
             res.status(500).send(error);
@@ -95,17 +71,13 @@ router.get(
             const [
                 results,
                 fields,
-            ] = await mysql.query(
-                'SELECT announcement,dtime FROM announcements WHERE classid=?',
-                [req.params.id]
-            );
-            res.json({results});
+            ] = await mysql.query('SELECT aid,announcement,dtime FROM announcements WHERE classid=?', [req.params.id]);
+            res.json({ results });
         } catch (error) {
             console.log(error);
             res.status(500).send(error);
         }
     }
 );
-
 
 module.exports = router;

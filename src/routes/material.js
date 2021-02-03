@@ -10,26 +10,20 @@ const { Readable } = require('stream');
 expected filename,classid,file as array
 */
 
-router.post(
-    '/',
-    auth('teacher'), async (req, res) => {
-        try {
-            const { materialname, classid, filetype, file } = req.body;
-            const [
-                results,
-            ] = await mysql.query(
-                'INSERT INTO material (materialname,classid,filetype) VALUES (?)',
-                [[materialname, classid, filetype]]
-            );
-            const id = results.insertId.toString();
-            const ans = await uploader(id, file);
-            res.json({ Response: 'File Uploaded' });
-        } catch (error) {
-            console.log(error);
-            res.status(500).send(error);
-        }
+router.post('/', auth('teacher'), async (req, res) => {
+    try {
+        const { materialname, classid, filetype, file } = req.body;
+        const [results] = await mysql.query('INSERT INTO material (materialname,classid,filetype) VALUES (?)', [
+            [materialname, classid, filetype],
+        ]);
+        const id = results.insertId.toString();
+        const ans = await uploader(id, file);
+        res.json({ Response: 'File Uploaded' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
     }
-);
+});
 
 async function uploader(id, file) {
     const bucket = await getBucket();
@@ -49,6 +43,20 @@ async function uploader(id, file) {
     });
 }
 
+//delete announcements
+
+router.delete('/:id', auth('teacher'), async (req, res) => {
+    const materialid = req.params.id;
+    console.log(materialid);
+    try {
+        const [result] = await mysql.query('DELETE FROM material where materialid = (?)', [[materialid]]);
+        res.json({ msg: 'deleted' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
 //get material
 
 router.get(
@@ -57,8 +65,8 @@ router.get(
         const materialid = req.params.id;
         try {
             const result = await downloader(materialid);
-            const [result2] = await mysql.query('select filetype from material where materialid = (?)', [materialid])
-            res.json({ file: result, ...result2[0]});
+            const [result2] = await mysql.query('select filetype from material where materialid = (?)', [materialid]);
+            res.json({ file: result, ...result2[0] });
         } catch (error) {
             console.log(error);
             res.status(500).send(error);
@@ -91,20 +99,15 @@ async function downloader(id) {
 
 //get all materials
 
-router.get('/', async (req,res) => {
+router.get('/', async (req, res) => {
     try {
-        const [
-            results,
-            fields,
-        ] = await mysql.query(
-            'SELECT materialid,materialname FROM material'
-        );
-        res.json({results});
+        const [results, fields] = await mysql.query('SELECT materialid,materialname FROM material');
+        res.json({ results });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
-})
+});
 
 //view materials list
 
@@ -112,14 +115,11 @@ router.get(
     '/class/:id',
     /*auth('teacher'),*/ async (req, res) => {
         try {
-            const [
-                results,
-                fields,
-            ] = await mysql.query(
+            const [results, fields] = await mysql.query(
                 'SELECT materialid,materialname FROM material WHERE classid=?',
                 [req.params.id]
             );
-            res.json({results});
+            res.json({ results });
         } catch (error) {
             console.log(error);
             res.status(500).send(error);
